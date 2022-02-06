@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.web;
 import org.slf4j.Logger;
 import ru.javawebinar.topjava.model.MealTo;
 import ru.javawebinar.topjava.repository.MealRepo;
+import ru.javawebinar.topjava.repository.MealStorageable;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import javax.servlet.ServletException;
@@ -17,12 +18,13 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
+    MealStorageable repo = new MealRepo();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.debug("forward to meals");
-        List<MealTo> list = MealsUtil.convertMealToMealTo(MealRepo.getInstance().getMeals(), MealsUtil.CALORIES_PER_DAY);
-        req.setAttribute("mealTo", list);
+        List<MealTo> list = MealsUtil.fillListMealTo(repo.getMeals(), MealsUtil.CALORIES_PER_DAY);
+        req.setAttribute("mealsTo", list);
         req.getRequestDispatcher("meals.jsp").forward(req, resp);
     }
 }

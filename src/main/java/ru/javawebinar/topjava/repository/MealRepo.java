@@ -6,18 +6,11 @@ import ru.javawebinar.topjava.util.MealsUtil;
 import java.util.Collections;
 import java.util.List;
 
-public class MealRepo {
+public class MealRepo implements MealStorageable {
     private List<Meal> meals;
-    private static MealRepo mealRepo;
 
-    private MealRepo() {
+    public MealRepo() {
         meals = Collections.synchronizedList(MealsUtil.getMeals());
-    }
-    public static synchronized MealRepo getInstance(){
-        if (mealRepo == null){
-            mealRepo = new MealRepo();
-        }
-        return mealRepo;
     }
 
     public List<Meal> getMeals() {
