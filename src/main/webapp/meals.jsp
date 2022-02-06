@@ -1,9 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ page import="java.time.format.DateTimeFormatter" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="ru.javawebinar.topjava.model.MealTo" %>
-<%@ page import="java.util.List" %>
 <html lang="ru">
 <head>
     <title>Meals</title>
@@ -32,6 +29,8 @@
         </td>
         <td><c:out value="${meal.description}"/></td>
         <td><c:out value="${meal.calories}"/></td>
+<%--        <td><a href="meals?action=edit&id=<c:out value="${loopStatus.index}"/>">Update</a></td>--%>
+<%--        <td><a href="meals?action=delete&id=<c:out value="${loopStatus.index}"/>">Delete</a></td>--%>
         </tr>
     </c:forEach>
 </table>

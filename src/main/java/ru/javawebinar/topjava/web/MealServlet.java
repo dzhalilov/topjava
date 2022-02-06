@@ -27,4 +27,17 @@ public class MealServlet extends HttpServlet {
         req.setAttribute("mealsTo", list);
         req.getRequestDispatcher("meals.jsp").forward(req, resp);
     }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        log.debug("delete meal: " + req.getParameter("id"));
+        repo.deleteById(Integer.parseInt(req.getParameter("id")));
+        doGet(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        log.debug("forward to doGet");
+        doGet(req, resp);
+    }
 }
