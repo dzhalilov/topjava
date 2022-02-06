@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class MealsUtil {
     public static final int CALORIES_PER_DAY = 2000;
     public static void main(String[] args) {
-        List<MealTo> mealsTo = filteredByStreams(MealRepo.getInstance().meals, LocalTime.of(7, 0), LocalTime.of(12, 0), CALORIES_PER_DAY);
+        List<MealTo> mealsTo = filteredByStreams(MealRepo.getInstance().getMeals(), LocalTime.of(7, 0), LocalTime.of(12, 0), CALORIES_PER_DAY);
         mealsTo.forEach(System.out::println);
     }
     public static List<Meal> getMeals(){

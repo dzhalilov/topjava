@@ -17,11 +17,13 @@
 <h3><a href="#">Add Meal</a></h3>
 <hr>
 <h2>Meals</h2>
-<table class="table-cell">
+<table class="table-cell" border="1">
     <tr>
         <th>Date</th>
         <th>Description</th>
         <th>Calories</th>
+<%--        <th>Update</th>--%>
+<%--        <th>Delete</th>--%>
     </tr>
     <%
         List<MealTo> list = (List<MealTo>) request.getAttribute("mealTo");
@@ -31,6 +33,7 @@
                     <td> <%=meal.getDateTime().toString().replace("T", " ")%></td>
                     <td> <%=meal.getDescription()%></td>
                     <td> <%=meal.getCalories()%></td>
+<%--                    <td> <a href="" </td>--%>
                 </tr>
             <%
         }

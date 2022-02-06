@@ -6,7 +6,7 @@ import ru.javawebinar.topjava.util.MealsUtil;
 import java.util.List;
 
 public class MealRepo {
-    public List<Meal> meals;
+    private List<Meal> meals;
     private static MealRepo mealRepo;
 
     private MealRepo() {
@@ -19,5 +19,7 @@ public class MealRepo {
         return mealRepo;
     }
 
-
+    public List<Meal> getMeals() {
+        return meals;
+    }
 }
