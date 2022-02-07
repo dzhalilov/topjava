@@ -9,4 +9,5 @@ public interface MealStorageable {
     Meal findById(int id);
     void deleteById(int id);
     void saveList();
+    void addMeal(Meal meal);
 }

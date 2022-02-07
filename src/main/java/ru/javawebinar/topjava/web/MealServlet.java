@@ -24,14 +24,17 @@ public class MealServlet extends HttpServlet {
     public void init() throws ServletException {
         repo = new MealRepo();
         repo.saveList();
-        super.init();
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.debug("forward to meals");
-        if (req.getParameter("id") != null) {
+        String action = req.getParameter("action");
+        if (action != null && action.equals("delete")){
+            log.debug("deleted: " + repo.findById(Integer.parseInt(req.getParameter("id"))));
             repo.deleteById(Integer.parseInt(req.getParameter("id")));
+        }else if (action != null && action.equals("edit")){
+
         }
         List<MealTo> list = MealsUtil.fillListMealTo(repo.getMeals(), MealsUtil.CALORIES_PER_DAY);
         req.setAttribute("mealsTo", list);

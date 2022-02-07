@@ -45,12 +45,16 @@ public class MealsUtil {
         Map<LocalDate, Integer> caloriesSumPerDay = meals.stream()
                 .collect(Collectors.groupingBy(Meal::getDate, Collectors.summingInt(Meal::getCalories)));
         return meals.stream()
-                .map(meal -> createTo(meal, caloriesSumPerDay.get(meal.getDate()) > calories))
+                .map(meal -> createWithId(meal, meal.getId(), caloriesSumPerDay.get(meal.getDate()) > calories))
                 .collect(Collectors.toList());
     }
 
     private static MealTo createTo(Meal meal, boolean excess) {
         return new MealTo(meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
+    }
+
+    private static MealTo createWithId(Meal meal, int id, boolean excess) {
+        return new MealTo(meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess, id);
     }
 }
 

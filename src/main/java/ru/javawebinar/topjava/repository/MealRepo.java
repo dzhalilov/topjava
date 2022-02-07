@@ -5,11 +5,12 @@ import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MealRepo implements MealStorageable {
     private static AtomicInteger id = new AtomicInteger(0);
-    private List<Meal> meals;
+    private List<Meal> meals = new CopyOnWriteArrayList<>();
 
     public MealRepo() {
     }
@@ -28,9 +29,9 @@ public class MealRepo implements MealStorageable {
 
     @Override
     public void deleteById(int id) {
-        for (Meal meal : meals) {
-            if (meal.getId() == id) {
-                meals.remove(meal);
+        for (int i = 0; i < meals.size(); i++) {
+            if (meals.get(i).getId() == id) {
+                meals.remove(i);
                 break;
             }
         }
@@ -40,7 +41,14 @@ public class MealRepo implements MealStorageable {
         return id.incrementAndGet();
     }
 
-    public void saveList(){
-        meals = Collections.synchronizedList(MealsUtil.getMeals());
+    public void saveList() {
+        for (Meal meal : MealsUtil.getMeals()){
+            meals.add(meal);
+        }
+    }
+
+    @Override
+    public void addMeal(Meal meal) {
+        meals.add(meal);
     }
 }

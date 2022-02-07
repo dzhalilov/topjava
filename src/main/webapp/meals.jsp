@@ -24,16 +24,8 @@
             </td>
             <td><c:out value="${meal.description}"/></td>
             <td><c:out value="${meal.calories}"/></td>
-            <td>
-                <form method="post">
-                    <a href="meals?id=<c:out value="${meal.id}"/>">Update</a>
-                </form>
-            </td>
-            <td>
-                <form method="get">
-                    <a href="meals?id=<c:out value="${meal.id}"/>">Delete</a>
-                </form>
-            </td>
+            <td><a href="meals?action=edit&id=<c:out value="${meal.id}"/>">Update</a></td>
+            <td><a href="meals?action=delete&id=<c:out value="${meal.id}"/>">Delete</a></td>
         </tr>
     </c:forEach>
 </table>
