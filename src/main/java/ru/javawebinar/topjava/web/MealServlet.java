@@ -23,6 +23,9 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.debug("forward to meals");
+        if (req.getParameter("id") != null) {
+            repo.deleteById(Integer.parseInt(req.getParameter("id")));
+        }
         List<MealTo> list = MealsUtil.fillListMealTo(repo.getMeals(), MealsUtil.CALORIES_PER_DAY);
         req.setAttribute("mealsTo", list);
         req.getRequestDispatcher("meals.jsp").forward(req, resp);
@@ -37,6 +40,7 @@ public class MealServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("UTF-8");
         log.debug("forward to doGet");
         doGet(req, resp);
     }

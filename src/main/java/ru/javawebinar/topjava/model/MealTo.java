@@ -1,8 +1,11 @@
 package ru.javawebinar.topjava.model;
 
+import ru.javawebinar.topjava.repository.MealRepo;
+
 import java.time.LocalDateTime;
 
 public class MealTo {
+    private final Integer id;
     private final LocalDateTime dateTime;
 
     private final String description;
@@ -16,6 +19,11 @@ public class MealTo {
         this.description = description;
         this.calories = calories;
         this.excess = excess;
+        this.id = MealRepo.getNextId();
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public LocalDateTime getDateTime() {

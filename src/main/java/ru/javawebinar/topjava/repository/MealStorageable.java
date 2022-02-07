@@ -7,6 +7,5 @@ import java.util.List;
 public interface MealStorageable {
     List<Meal> getMeals();
     Meal findById(int id);
-    int findId(Meal meal);
     void deleteById(int id);
 }
