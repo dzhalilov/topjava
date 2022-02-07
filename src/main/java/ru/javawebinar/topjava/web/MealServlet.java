@@ -18,7 +18,14 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
-    MealStorageable repo = new MealRepo();
+    MealStorageable repo;
+
+    @Override
+    public void init() throws ServletException {
+        repo = new MealRepo();
+        repo.saveList();
+        super.init();
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

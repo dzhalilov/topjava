@@ -8,4 +8,5 @@ public interface MealStorageable {
     List<Meal> getMeals();
     Meal findById(int id);
     void deleteById(int id);
+    void saveList();
 }

@@ -12,7 +12,6 @@ public class MealRepo implements MealStorageable {
     private List<Meal> meals;
 
     public MealRepo() {
-        meals = Collections.synchronizedList(MealsUtil.getMeals());
     }
 
     public List<Meal> getMeals() {
@@ -39,5 +38,9 @@ public class MealRepo implements MealStorageable {
 
     public static Integer getNextId() {
         return id.incrementAndGet();
+    }
+
+    public void saveList(){
+        meals = Collections.synchronizedList(MealsUtil.getMeals());
     }
 }
