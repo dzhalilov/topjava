@@ -11,10 +11,10 @@
 <h2>Edit meal</h2>
 <c:set var="param" value="meal"/>
 <form method="post" action="meals">
-    <input type="hidden" name="id" value="${item.id}"/>
-<%--    Date Time: <input type="datetime-local" name="dateTime" value="<c:out value="${item.dateTime}" />"/><br/>--%>
+    <input type="hidden" name="id" value="${param.id}"/>
+    Date Time: <input type="datetime-local" name="dateTime" value="<c:out value="${item.dateTime}" />"/><br/>
     Description: <input type="text" name="description" value="${param.description}"/><br/>
-    Calories: <input type="text" name="description" value="${param.calories}"/><br/>
+    Calories: <input type="text" name="calories" value="${param.calories}"/><br/>
     <button type="submit">Save</button>
     <button onclick="meals">Cancel</button>
 </form>

@@ -8,7 +8,7 @@
 <body>
 <h3><a href="index.html">Home</a></h3>
 <hr>
-<h3><a href="#">Add Meal</a></h3>
+<h3><a href="meals?action=addMeal">Add Meal</a></h3>
 <h2>Meals</h2>
 <table class="table-cell" border="1">
     <tr style="background-color: darkgrey">

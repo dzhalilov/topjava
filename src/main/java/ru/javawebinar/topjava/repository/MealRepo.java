@@ -3,7 +3,6 @@ package ru.javawebinar.topjava.repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.MealsUtil;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -37,18 +36,26 @@ public class MealRepo implements MealStorageable {
         }
     }
 
-    public static Integer getNextId() {
-        return id.incrementAndGet();
-    }
-
     public void saveList() {
-        for (Meal meal : MealsUtil.getMeals()){
+        for (Meal meal : MealsUtil.getMeals()) {
+            meal.setId(id.incrementAndGet());
             meals.add(meal);
         }
     }
 
     @Override
     public void addMeal(Meal meal) {
+        meal.setId(id.incrementAndGet());
         meals.add(meal);
+    }
+
+    @Override
+    public void editMeal(Meal meal) {
+        int id = meal.getId();
+        for (int i = 0; i < meals.size(); i++) {
+            if (meals.get(i).getId() == id) {
+                meals.set(i, meal);
+            }
+        }
     }
 }
