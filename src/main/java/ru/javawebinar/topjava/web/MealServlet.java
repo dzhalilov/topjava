@@ -53,13 +53,6 @@ public class MealServlet extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        log.debug("delete meal: " + req.getParameter("id"));
-        repo.deleteById(Integer.parseInt(req.getParameter("id")));
-        doGet(req, resp);
-    }
-
-    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
         log.debug("doPost Method");
