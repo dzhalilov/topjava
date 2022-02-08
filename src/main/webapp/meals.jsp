@@ -10,11 +10,13 @@
 <hr>
 <h3><a href="meals?action=add">Add Meal</a></h3>
 <h2>Meals</h2>
-<table class="table-cell" border="1">
-    <tr style="background-color: darkgrey">
+<table class="table-cell" border>
+    <tr style="background-color: grey">
         <th>Date</th>
         <th>Description</th>
         <th>Calories</th>
+        <th></th>
+        <th></th>
     </tr>
     <c:forEach items="${mealsTo}" var="meal">
         <tr style="color: ${meal.excess ? "red" : "green"} ">

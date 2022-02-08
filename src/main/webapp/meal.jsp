@@ -29,8 +29,6 @@
         <tr>
             <td>
                 <input type="submit" name="submit" value="Save">
-            </td>
-            <td>
                 <a href="meals">
                     <button type="button">Cancel</button>
                 </a>
