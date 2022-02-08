@@ -49,6 +49,7 @@ public class MealServlet extends HttpServlet {
             case "add": {
                 log.debug("start adding Meal");
                 Meal meal = new Meal();
+                meal.setDateTime(LocalDateTime.now());
                 req.setAttribute("meal", meal);
                 req.setAttribute("act", "Add");
                 req.getRequestDispatcher("meal.jsp").forward(req, resp);
