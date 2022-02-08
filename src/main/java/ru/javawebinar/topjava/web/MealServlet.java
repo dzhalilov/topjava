@@ -37,7 +37,8 @@ public class MealServlet extends HttpServlet {
             case "delete":
                 log.debug("deleted id: {}", id);
                 repo.deleteById(Integer.parseInt(id));
-                break;
+                resp.sendRedirect("meals");
+                return;
             case "edit": {
                 log.debug("start edit: {}", id);
                 Meal meal = repo.findById(Integer.parseInt(id));
