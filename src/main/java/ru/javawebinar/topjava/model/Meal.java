@@ -1,13 +1,12 @@
 package ru.javawebinar.topjava.model;
 
-import ru.javawebinar.topjava.repository.MealRepo;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class Meal {
     private Integer id;
+
     private LocalDateTime dateTime;
 
     private String description;

@@ -8,15 +8,16 @@
 <body>
 <h3><a href="index.html">Home</a></h3>
 <hr>
-<h2>Edit meal</h2>
-<c:set var="param" value="meal"/>
+<c:set var="act" value="${act}"/>
+<h2>${act} meal</h2>
+<c:set var="meal" value="${meal}"/>
 <form method="post" action="meals">
-    <input type="hidden" name="id" value="${param.id}"/>
-    Date Time: <input type="datetime-local" name="dateTime" value="<c:out value="${item.dateTime}" />"/><br/>
-    Description: <input type="text" name="description" value="${param.description}"/><br/>
-    Calories: <input type="text" name="calories" value="${param.calories}"/><br/>
+    <input type="hidden" name="id" value="${meal.id}"/>
+    Date Time: <input type="datetime-local" name="dateTime" value="${meal.dateTime}"/><br/>
+    Description: <input type="text" name="description" value="${meal.description}"/><br/>
+    Calories: <input type="number" name="calories" value="${meal.calories}"/><br/>
     <button type="submit">Save</button>
-    <button onclick="meals">Cancel</button>
+    <button type="reset" onclick="meals">Cancel</button>
 </form>
 
 </body>

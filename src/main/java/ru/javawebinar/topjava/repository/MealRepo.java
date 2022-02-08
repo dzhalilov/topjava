@@ -3,19 +3,24 @@ package ru.javawebinar.topjava.repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.MealsUtil;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MealRepo implements MealStorageable {
-    private static AtomicInteger id = new AtomicInteger(0);
+public class MealRepo implements MealStorage {
+    private AtomicInteger count = new AtomicInteger(0);
     private List<Meal> meals = new CopyOnWriteArrayList<>();
 
     public MealRepo() {
+        for (Meal meal : MealsUtil.getMeals()) {
+            add(meal);
+        }
     }
 
-    public List<Meal> getMeals() {
-        return meals;
+    public List<Meal> getAll() {
+        return new ArrayList<>(meals);
     }
 
     @Override
@@ -36,26 +41,22 @@ public class MealRepo implements MealStorageable {
         }
     }
 
-    public void saveList() {
-        for (Meal meal : MealsUtil.getMeals()) {
-            meal.setId(id.incrementAndGet());
-            meals.add(meal);
-        }
-    }
-
     @Override
-    public void addMeal(Meal meal) {
-        meal.setId(id.incrementAndGet());
+    public Meal add(Meal meal) {
+        meal.setId(count.incrementAndGet());
         meals.add(meal);
+        return meal;
     }
 
     @Override
-    public void editMeal(Meal meal) {
-        int id = meal.getId();
+    public Meal update(int id, Meal meal) {
+        meal.setId(id);
         for (int i = 0; i < meals.size(); i++) {
             if (meals.get(i).getId() == id) {
                 meals.set(i, meal);
+                return meal;
             }
         }
+        return null;
     }
 }
