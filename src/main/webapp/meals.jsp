@@ -23,7 +23,7 @@
     <h2>Meals</h2>
     <a href="meals?action=create">Add Meal</a>
     <br><br>
-    <form method="get" action="meals">
+    <form method="get" action="meals" name="filtering">
         <dev>
             <label for="startDate">От даты (включая)</label>
             <input type="date" id="startDate" name="startDate">

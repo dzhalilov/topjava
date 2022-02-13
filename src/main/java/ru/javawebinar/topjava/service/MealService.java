@@ -9,7 +9,10 @@ import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
 import static ru.javawebinar.topjava.web.SecurityUtil.authUserCaloriesPerDay;
@@ -31,18 +34,19 @@ public class MealService {
         return checkNotFoundWithId(repository.get(id, userId), id);
     }
 
-    public List<MealTo> getAll(int userId) {
-        return MealsUtil.getTos(repository.getAll(userId), authUserCaloriesPerDay());
+    public List<MealTo> getAll(int userId, int calories) {
+        return MealsUtil.getTos(repository.getAll(userId), calories);
     }
 
     public Meal update(Meal meal, int userId) {
-        return checkNotFoundWithId(repository.save(meal, userId), userId);
+        return checkNotFoundWithId(repository.save(meal, userId), meal.getId());
     }
 
-    public List<MealTo> getAll(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, int userId) {
-        List<Meal> filteredMeals = (List<Meal>) repository.getAll(startDate, endDate, startTime, endTime, userId);
-        List<MealTo> allUserMealTo = MealsUtil.getTos(repository.getAll(startDate, endDate, startTime, endTime, userId), authUserCaloriesPerDay());
-        // TODO filter
-        return MealsUtil.getTos(repository.getAll(startDate, endDate, startTime, endTime, userId), authUserCaloriesPerDay());
+    public List<MealTo> getList(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, int userId, int calories) {
+        Map<LocalDate, Integer> caloriesSumByDate = repository.getAll(userId).stream()
+                .collect(Collectors.toMap(Meal::getDate, Meal::getCalories, Integer::sum));
+        return repository.getList(startDate, endDate, startTime, endTime, userId).stream()
+                .map(meal -> MealsUtil.createTo(meal, caloriesSumByDate.get(meal.getDate()) > calories))
+                .collect(Collectors.toList());
     }
 }

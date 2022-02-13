@@ -6,6 +6,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.web.meal.MealRestController;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -18,9 +19,11 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
+import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
+
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
-    ConfigurableApplicationContext appCtx;
+    private ConfigurableApplicationContext appCtx;
     private MealRestController controller;
 
 
@@ -48,44 +51,46 @@ public class MealServlet extends HttpServlet {
                 SecurityUtil.authUserId());
 
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
-        Meal meal1 = meal.isNew() ? controller.create(meal) : controller.update(meal);
+        if (meal.isNew()) controller.create(meal, authUserId());
+        else controller.update(meal, Integer.parseInt(id), authUserId());
         response.sendRedirect("meals");
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-        // TODO think up where userId will be handled
-        String userId = request.getParameter("userId");
-        if (userId != null && !"".equals(userId)) SecurityUtil.setAuthUserId(Integer.parseInt(userId));
-
         switch (action == null ? "all" : action) {
             case "delete":
                 int id = getId(request);
                 log.info("Delete {}", id);
-                controller.delete(id);
+                controller.delete(id, authUserId());
                 response.sendRedirect("meals");
                 break;
             case "create":
             case "update":
                 final Meal meal = "create".equals(action) ?
                         new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
-                        controller.get(getId(request));
+                        controller.get(getId(request), authUserId());
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
-            case "all":
-            default:
+            case "filtering":
+                log.info("getFiltered");
                 String sd = request.getParameter("startDate");
                 String ed = request.getParameter("endDate");
                 String st = request.getParameter("startTime");
                 String et = request.getParameter("endTime");
-                LocalDate startDate = sd != null && !"".equals(sd) ? LocalDate.parse(sd) : LocalDate.MIN;
-                LocalDate endDate = ed != null && !"".equals(ed) ? LocalDate.parse(ed) : LocalDate.MAX;
-                LocalTime startTime = st != null && !"".equals(st) ? LocalTime.parse(st) : LocalTime.MIN;
-                LocalTime endTime = et != null && !"".equals(et) ? LocalTime.parse(et) : LocalTime.MAX;
+                LocalDate startDate = StringUtils.hasLength(sd) ? LocalDate.parse(sd) : null;
+                LocalDate endDate = StringUtils.hasLength(ed) ? LocalDate.parse(ed) : null;
+                LocalTime startTime = StringUtils.hasLength(st) ? LocalTime.parse(st) : null;
+                LocalTime endTime = StringUtils.hasLength(et) ? LocalTime.parse(et) : null;
+                request.setAttribute("meals", controller.getList(startDate, endDate, startTime, endTime, authUserId()));
+                request.getRequestDispatcher("/meals.jsp").forward(request, response);
+                break;
+            case "all":
+            default:
                 log.info("getAll");
-                request.setAttribute("meals", controller.getAll(startDate, endDate, startTime, endTime));
+                request.setAttribute("meals", controller.getAll(authUserId()));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
