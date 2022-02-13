@@ -31,6 +31,12 @@ public class MealServlet extends HttpServlet {
     }
 
     @Override
+    public void destroy() {
+        appCtx.close();
+        super.destroy();
+    }
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         String id = request.getParameter("id");
@@ -49,6 +55,9 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
+        // TODO think up where userId will be handled
+        String userId = request.getParameter("userId");
+        if (userId != null && !"".equals(userId)) SecurityUtil.setAuthUserId(Integer.parseInt(userId));
 
         switch (action == null ? "all" : action) {
             case "delete":

@@ -40,6 +40,9 @@ public class MealService {
     }
 
     public List<MealTo> getAll(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, int userId) {
+        List<Meal> filteredMeals = (List<Meal>) repository.getAll(startDate, endDate, startTime, endTime, userId);
+        List<MealTo> allUserMealTo = MealsUtil.getTos(repository.getAll(startDate, endDate, startTime, endTime, userId), authUserCaloriesPerDay());
+        // TODO filter
         return MealsUtil.getTos(repository.getAll(startDate, endDate, startTime, endTime, userId), authUserCaloriesPerDay());
     }
 }
