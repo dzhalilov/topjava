@@ -8,9 +8,12 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
+
 @Controller
 public class MealRestController {
     @Autowired
@@ -20,6 +23,11 @@ public class MealRestController {
     public List<MealTo> getAll() {
         log.info("getAll");
         return service.getAll(authUserId());
+    }
+
+    public List<MealTo> getAll(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
+        log.info("getAll");
+        return service.getAll(startDate, endDate, startTime, endTime, authUserId());
     }
 
     public Meal update(Meal meal) {

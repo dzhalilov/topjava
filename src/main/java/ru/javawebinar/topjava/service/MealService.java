@@ -7,6 +7,8 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
@@ -35,5 +37,9 @@ public class MealService {
 
     public Meal update(Meal meal, int userId) {
         return checkNotFoundWithId(repository.save(meal, userId), userId);
+    }
+
+    public List<MealTo> getAll(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, int userId) {
+        return MealsUtil.getTos(repository.getAll(startDate, endDate, startTime, endTime, userId), authUserCaloriesPerDay());
     }
 }
