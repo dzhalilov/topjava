@@ -4,9 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.util.StringUtils;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.web.meal.MealRestController;
-import org.springframework.util.StringUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -85,6 +85,10 @@ public class MealServlet extends HttpServlet {
                 LocalTime startTime = StringUtils.hasLength(st) ? LocalTime.parse(st) : null;
                 LocalTime endTime = StringUtils.hasLength(et) ? LocalTime.parse(et) : null;
                 request.setAttribute("meals", controller.getList(startDate, endDate, startTime, endTime, authUserId()));
+                request.setAttribute("startDate", startDate);
+                request.setAttribute("endDate", endDate);
+                request.setAttribute("startTime", startTime);
+                request.setAttribute("endTime", endTime);
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
             case "all":

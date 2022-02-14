@@ -49,12 +49,19 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public Collection<Meal> getList(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, int userId) {
-        return repository.values().stream()
-                .filter(meal -> meal.getUserId() == userId)
+        return getAll(userId).stream()
                 .filter(meal -> !meal.getDateTime().toLocalDate().isBefore(startDate) && !meal.getDateTime().toLocalDate().isAfter(endDate))
                 .filter(meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), startTime, endTime))
-                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
+        /**
+         * What implementation is better?
+         */
+//        return repository.values().stream()
+//                .filter(meal -> meal.getUserId() == userId)
+//                .filter(meal -> !meal.getDateTime().toLocalDate().isBefore(startDate) && !meal.getDateTime().toLocalDate().isAfter(endDate))
+//                .filter(meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), startTime, endTime))
+//                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
+//                .collect(Collectors.toList());
     }
 
     @Override
