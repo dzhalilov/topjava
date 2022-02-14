@@ -7,7 +7,6 @@ import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
-import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -15,7 +14,8 @@ import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
-import static ru.javawebinar.topjava.web.SecurityUtil.*;
+import static ru.javawebinar.topjava.web.SecurityUtil.authUserCaloriesPerDay;
+import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 
 @Controller
 public class MealRestController {
@@ -23,39 +23,39 @@ public class MealRestController {
     private MealService service;
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public List<MealTo> getAll(int userId) {
+    public List<MealTo> getAll() {
         log.info("getAll");
-        return service.getAll(userId, authUserCaloriesPerDay());
+        return service.getAll(authUserId(), authUserCaloriesPerDay());
     }
 
-    public List<MealTo> getList(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, int userId) {
-        log.info("getAll");
+    public List<MealTo> getFiltered(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
+        log.info("getFiltered");
         startDate = startDate != null ? startDate : LocalDate.MIN;
         endDate = endDate != null ? endDate : LocalDate.MAX;
         startTime = startTime != null ? startTime : LocalTime.MIN;
         endTime = endTime != null ? endTime : LocalTime.MAX;
-        return service.getList(startDate, endDate, startTime, endTime, userId, authUserCaloriesPerDay());
+        return service.getFiltered(startDate, endDate, startTime, endTime, authUserId(), authUserCaloriesPerDay());
     }
 
-    public Meal update(Meal meal, int id, int userId) {
+    public Meal update(Meal meal, int id) {
         log.info("update {}", meal);
         assureIdConsistent(meal, id);
-        return service.update(meal, userId);
+        return service.update(meal, authUserId());
     }
 
-    public Meal create(Meal meal, int userId) {
+    public Meal create(Meal meal) {
         log.info("create {}", meal);
         checkNew(meal);
-        return service.create(meal, userId);
+        return service.create(meal, authUserId());
     }
 
-    public Meal get(int id, int userId) {
+    public Meal get(int id) {
         log.info("get with id: {}", id);
-        return service.get(id, userId);
+        return service.get(id, authUserId());
     }
 
-    public void delete(int id, int userId) {
+    public void delete(int id) {
         log.info("delete with id: {}", id);
-        service.delete(id, userId);
+        service.delete(id, authUserId());
     }
 }

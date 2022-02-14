@@ -8,20 +8,23 @@ import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryMealRepository implements MealRepository {
     private final Map<Integer, Meal> repository = new ConcurrentHashMap<>();
+    private final Map<Integer, List<Integer>> usersMealId = new ConcurrentHashMap<>();
     private final AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.meals.forEach(meal -> this.save(meal, 1));
+        MealsUtil.mealsForUser1.forEach(meal -> this.save(meal, 1));
+        MealsUtil.mealsForUser2.forEach(meal -> this.save(meal, 2));
     }
 
     @Override
@@ -43,29 +46,21 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public Meal get(int id, int userId) {
-        Meal meal = repository.getOrDefault(id, null);
+        Meal meal = repository.get(id);
         return meal != null && meal.getUserId() == userId ? meal : null;
     }
 
     @Override
-    public Collection<Meal> getList(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, int userId) {
-        return getAll(userId).stream()
-                .filter(meal -> !meal.getDateTime().toLocalDate().isBefore(startDate) && !meal.getDateTime().toLocalDate().isAfter(endDate))
-                .filter(meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), startTime, endTime))
+    public List<Meal> getFiltered(Predicate<Meal> datePredicate, int userId) {
+        return repository.values().stream()
+                .filter(meal -> meal.getUserId() == userId)
+                .filter(datePredicate)
+                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
-        /**
-         * What implementation is better?
-         */
-//        return repository.values().stream()
-//                .filter(meal -> meal.getUserId() == userId)
-//                .filter(meal -> !meal.getDateTime().toLocalDate().isBefore(startDate) && !meal.getDateTime().toLocalDate().isAfter(endDate))
-//                .filter(meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), startTime, endTime))
-//                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
-//                .collect(Collectors.toList());
     }
 
     @Override
-    public Collection<Meal> getAll(int userId) {
+    public List<Meal> getAll(int userId) {
         return repository.values().stream()
                 .filter(meal -> meal.getUserId() == userId)
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())

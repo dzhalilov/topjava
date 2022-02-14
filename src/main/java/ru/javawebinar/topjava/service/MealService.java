@@ -9,13 +9,10 @@ import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.function.Predicate;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
-import static ru.javawebinar.topjava.web.SecurityUtil.authUserCaloriesPerDay;
 
 @Service
 public class MealService {
@@ -39,14 +36,15 @@ public class MealService {
     }
 
     public Meal update(Meal meal, int userId) {
+        meal.setUserId(userId);
         return checkNotFoundWithId(repository.save(meal, userId), meal.getId());
     }
 
-    public List<MealTo> getList(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, int userId, int calories) {
-        Map<LocalDate, Integer> caloriesSumByDate = repository.getAll(userId).stream()
-                .collect(Collectors.toMap(Meal::getDate, Meal::getCalories, Integer::sum));
-        return repository.getList(startDate, endDate, startTime, endTime, userId).stream()
-                .map(meal -> MealsUtil.createTo(meal, caloriesSumByDate.get(meal.getDate()) > calories))
-                .collect(Collectors.toList());
+    public List<MealTo> getFiltered(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, int userId, int calories) {
+        Predicate<Meal> datePredicate1 = meal -> !meal.getDate().isBefore(startDate);
+        Predicate<Meal> datePredicate2 = meal -> !meal.getDate().isAfter(endDate);
+        Predicate<Meal> datePredicate = datePredicate1.and(datePredicate2);
+        return MealsUtil.getFilteredTos(repository.getFiltered(datePredicate, userId),
+                calories, startTime, endTime);
     }
 }

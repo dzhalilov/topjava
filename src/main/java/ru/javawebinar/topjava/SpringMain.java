@@ -21,16 +21,16 @@ public class SpringMain {
             adminUserController.create(new User(null, "userName", "email@mail.ru", "password", Role.ADMIN));
             MealRestController mealRestController = appCtx.getBean(MealRestController.class);
             SecurityUtil.setAuthUserId(1);
-            System.out.println(mealRestController.get(3, SecurityUtil.authUserId()));
-            mealRestController.delete(3, SecurityUtil.authUserId());
-            System.out.println(mealRestController.create(new Meal(LocalDateTime.now(), "Tea", 50), SecurityUtil.authUserId()));
+            System.out.println(mealRestController.get(3));
+            mealRestController.delete(3);
+            System.out.println(mealRestController.create(new Meal(LocalDateTime.now(), "Tea", 50)));
 
             int changingIdOfMeal = 1;
-            Meal oldMeal = mealRestController.get(changingIdOfMeal, SecurityUtil.authUserId());
+            Meal oldMeal = mealRestController.get(changingIdOfMeal);
             Meal newMeal = new Meal(changingIdOfMeal, oldMeal.getDateTime(), oldMeal.getDescription(), oldMeal.getCalories() + 100, SecurityUtil.authUserId());
 
-            System.out.println(mealRestController.update(newMeal, changingIdOfMeal, SecurityUtil.authUserId()));
-            mealRestController.getAll(SecurityUtil.authUserId()).forEach(System.out::println);
+            System.out.println(mealRestController.update(newMeal, changingIdOfMeal));
+            mealRestController.getAll().forEach(System.out::println);
         }
     }
 }
