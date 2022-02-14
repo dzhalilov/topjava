@@ -3,11 +3,9 @@ package ru.javawebinar.topjava.repository.inmemory;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +31,8 @@ public class InMemoryMealRepository implements MealRepository {
             meal.setId(counter.incrementAndGet());
             meal.setUserId(userId);
             repository.put(meal.getId(), meal);
+            usersMealId.putIfAbsent(userId, new ArrayList<>());
+            usersMealId.get(userId).add(meal.getId());
             return meal;
         }
         return get(meal.getId(), userId) != null ?
@@ -41,7 +41,10 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public boolean delete(int id, int userId) {
-        return get(id, userId) != null && repository.remove(id) != null;
+        if (get(id, userId) != null && repository.remove(id) != null) {
+            usersMealId.get(userId).remove(Integer.valueOf(id));
+            return true;
+        } else return false;
     }
 
     @Override
@@ -52,8 +55,8 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getFiltered(Predicate<Meal> datePredicate, int userId) {
-        return repository.values().stream()
-                .filter(meal -> meal.getUserId() == userId)
+        return usersMealId.get(userId).stream()
+                .map(repository::get)
                 .filter(datePredicate)
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
@@ -61,8 +64,8 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getAll(int userId) {
-        return repository.values().stream()
-                .filter(meal -> meal.getUserId() == userId)
+        return usersMealId.get(userId).stream()
+                .map(repository::get)
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
     }
