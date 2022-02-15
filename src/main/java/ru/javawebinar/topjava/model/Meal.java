@@ -30,7 +30,7 @@ public class Meal extends AbstractBaseEntity {
         this.userId = userId;
     }
 
-    public int getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
@@ -46,7 +46,7 @@ public class Meal extends AbstractBaseEntity {
         return description;
     }
 
-    public Integer getCalories() {
+    public int getCalories() {
         return calories;
     }
 

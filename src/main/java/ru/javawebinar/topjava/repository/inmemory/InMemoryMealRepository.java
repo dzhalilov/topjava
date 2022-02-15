@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -31,7 +32,7 @@ public class InMemoryMealRepository implements MealRepository {
             meal.setId(counter.incrementAndGet());
             meal.setUserId(userId);
             repository.put(meal.getId(), meal);
-            usersMealId.putIfAbsent(userId, new ArrayList<>());
+            usersMealId.putIfAbsent(userId, new CopyOnWriteArrayList<>());
             usersMealId.get(userId).add(meal.getId());
             return meal;
         }
@@ -55,7 +56,7 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getFiltered(Predicate<Meal> datePredicate, int userId) {
-        return usersMealId.get(userId).stream()
+        return usersMealId.getOrDefault(userId, new ArrayList<>()).stream()
                 .map(repository::get)
                 .filter(datePredicate)
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
@@ -64,10 +65,7 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getAll(int userId) {
-        return usersMealId.get(userId).stream()
-                .map(repository::get)
-                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
-                .collect(Collectors.toList());
+        return getFiltered(date -> true, userId);
     }
 }
 

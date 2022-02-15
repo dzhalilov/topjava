@@ -36,8 +36,9 @@ public class MealService {
     }
 
     public Meal update(Meal meal, int userId) {
+        if (get(meal.getId(), userId) == null) return null;
         meal.setUserId(userId);
-        return checkNotFoundWithId(repository.save(meal, userId), meal.getId());
+        return repository.save(meal, userId);
     }
 
     public List<MealTo> getFiltered(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, int userId, int calories) {
