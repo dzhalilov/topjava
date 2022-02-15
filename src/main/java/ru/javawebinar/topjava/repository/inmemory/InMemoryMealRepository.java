@@ -31,7 +31,7 @@ public class InMemoryMealRepository implements MealRepository {
             meal.setId(counter.incrementAndGet());
             meal.setUserId(userId);
             repository.put(meal.getId(), meal);
-            usersMealId.putIfAbsent(userId, new CopyOnWriteArrayList<>());
+            usersMealId.computeIfAbsent(userId, k -> new CopyOnWriteArrayList<>());
             usersMealId.get(userId).add(meal.getId());
             return meal;
         }
