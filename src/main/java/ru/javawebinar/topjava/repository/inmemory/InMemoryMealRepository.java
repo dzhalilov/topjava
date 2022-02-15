@@ -5,7 +5,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -55,17 +55,17 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public List<Meal> getFiltered(Predicate<Meal> datePredicate, int userId) {
-        return usersMealId.getOrDefault(userId, new ArrayList<>()).stream()
+    public List<Meal> getFiltered(LocalDate startDate, LocalDate endDate, int userId) {
+        return usersMealId.getOrDefault(userId, new CopyOnWriteArrayList<>()).stream()
                 .map(repository::get)
-                .filter(datePredicate)
+                .filter( meal -> !meal.getDate().isBefore(startDate) && !meal.getDate().isAfter(endDate))
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Meal> getAll(int userId) {
-        return getFiltered(date -> true, userId);
+        return getFiltered(LocalDate.MIN, LocalDate.MAX, userId);
     }
 }
 

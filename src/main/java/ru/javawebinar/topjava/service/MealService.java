@@ -42,10 +42,7 @@ public class MealService {
     }
 
     public List<MealTo> getFiltered(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, int userId, int calories) {
-        Predicate<Meal> datePredicate1 = meal -> !meal.getDate().isBefore(startDate);
-        Predicate<Meal> datePredicate2 = meal -> !meal.getDate().isAfter(endDate);
-        Predicate<Meal> datePredicate = datePredicate1.and(datePredicate2);
-        return MealsUtil.getFilteredTos(repository.getFiltered(datePredicate, userId),
+        return MealsUtil.getFilteredTos(repository.getFiltered(startDate, endDate, userId),
                 calories, startTime, endTime);
     }
 }
