@@ -27,7 +27,7 @@ public class SpringMain {
 
             int changingIdOfMeal = 1;
             Meal oldMeal = mealRestController.get(changingIdOfMeal);
-            Meal newMeal = new Meal(changingIdOfMeal, oldMeal.getDateTime(), oldMeal.getDescription(), oldMeal.getCalories() + 100, SecurityUtil.authUserId());
+            Meal newMeal = new Meal(changingIdOfMeal, oldMeal.getDateTime(), oldMeal.getDescription(), oldMeal.getCalories() + 100);
 
             System.out.println(mealRestController.update(newMeal, changingIdOfMeal));
             mealRestController.getAll().forEach(System.out::println);

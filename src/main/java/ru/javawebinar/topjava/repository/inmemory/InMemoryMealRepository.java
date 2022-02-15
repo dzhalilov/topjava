@@ -27,7 +27,6 @@ public class InMemoryMealRepository implements MealRepository {
     public Meal save(Meal meal, int userId) {
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
-            meal.setUserId(userId);
             repo.computeIfAbsent(userId, k -> new ConcurrentHashMap<>()).put(meal.getId(), meal);
             return meal;
         }
@@ -43,7 +42,7 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public Meal get(int id, int userId) {
         Meal meal = repo.getOrDefault(userId, new ConcurrentHashMap<>()).getOrDefault(id, null);
-        return meal != null && meal.getUserId() == userId ? meal : null;
+        return meal != null && repo.get(userId).containsKey(id) ? meal : null;
     }
 
     @Override

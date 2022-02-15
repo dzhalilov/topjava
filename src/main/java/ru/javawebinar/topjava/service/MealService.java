@@ -37,7 +37,6 @@ public class MealService {
 
     public Meal update(Meal meal, int userId) {
         if (get(meal.getId(), userId) == null) return null;
-        meal.setUserId(userId);
         return repository.save(meal, userId);
     }
 
