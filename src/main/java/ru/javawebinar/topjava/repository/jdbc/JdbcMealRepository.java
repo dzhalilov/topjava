@@ -63,7 +63,7 @@ public class JdbcMealRepository implements MealRepository {
     }
 
     private boolean checkUserId(int id, int userId) {
-        String checkedUserId = jdbcTemplate.queryForObject("SELECT userId FROM meals WHERE id=?", new Object[]{id}, String.class);
-        return (checkedUserId != null) && (userId == Integer.parseInt(checkedUserId));
+        Integer checkedUserId = jdbcTemplate.queryForObject("SELECT userId FROM meals WHERE id=?", new Object[]{id}, Integer.class);
+        return (checkedUserId != null) && (userId == checkedUserId);
     }
 }

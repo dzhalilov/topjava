@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
@@ -45,12 +46,12 @@ public class MealServiceTest {
     }
 
     @Test(expected = EmptyResultDataAccessException.class)
-    public void get_no_found_id() {
+    public void getNoFoundId() {
         Meal meal = mealService.get(NO_FOUND_ID, USER_ID);
     }
 
     @Test(expected = NotFoundException.class)
-    public void get_with_wrong_user_id() {
+    public void getWithWrongUserId() {
         mealService.get(meal7.getId(), USER_ID);
     }
 
@@ -61,7 +62,7 @@ public class MealServiceTest {
     }
 
     @Test(expected = NotFoundException.class)
-    public void delete_with_wrong_user_id() {
+    public void deleteWithWrongUserId() {
         mealService.delete(meal1.getId(), ADMIN_ID);
     }
 
@@ -89,14 +90,14 @@ public class MealServiceTest {
         Assert.assertEquals(meal, mealResult);
     }
 
-//    @Test(expected = EmptyResultDataAccessException.class)
-//    public void update_with_wrong_id() {
-//        meal1.setId(NO_FOUND_ID);
-//        mealService.update(meal1, USER_ID);
-//    }
+    @Test(expected = EmptyResultDataAccessException.class)
+    public void updateWithWrongId() {
+        meal1.setId(NO_FOUND_ID);
+        mealService.update(meal1, USER_ID);
+    }
 
     @Test(expected = NotFoundException.class)
-    public void update_with_wrong_user_id() {
+    public void updateWithWrongUserId() {
         mealService.update(meal1, NO_FOUND_ID);
     }
 
@@ -104,5 +105,11 @@ public class MealServiceTest {
     public void create() {
         Meal meal = mealService.create(getNew(), ADMIN_ID);
         Assert.assertEquals("Tea", meal.getDescription());
+    }
+
+    @Test(expected = DuplicateKeyException.class)
+    public void createWithDuplicateDate() {
+        Meal meal = new Meal(null, meal8.getDateTime(), NEW_DESCRIPTION, 500);
+        mealService.create(meal, ADMIN_ID);
     }
 }
