@@ -18,7 +18,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
-import static ru.javawebinar.topjava.service.MealTestData.*;
+import static ru.javawebinar.topjava.MealTestData.*;
 
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
@@ -55,10 +55,10 @@ public class MealServiceTest {
         mealService.get(meal7.getId(), USER_ID);
     }
 
-    @Test(expected = EmptyResultDataAccessException.class)
+    @Test
     public void delete() {
         mealService.delete(meal1.getId(), USER_ID);
-        mealService.get(meal1.getId(), USER_ID);
+        Assert.assertThrows(NotFoundException.class, () -> mealService.get(meal1.getId(), USER_ID));
     }
 
     @Test(expected = NotFoundException.class)
@@ -86,7 +86,8 @@ public class MealServiceTest {
         Meal meal = new Meal(meal1.getId(), meal1.getDateTime(),
                 meal1.getDescription(), meal1.getCalories());
         meal.setDescription(NEW_DESCRIPTION);
-        Meal mealResult = mealService.update(meal, USER_ID);
+        mealService.update(meal, USER_ID);
+        Meal mealResult = mealService.get(meal1.getId(), USER_ID);
         Assert.assertEquals(meal, mealResult);
     }
 

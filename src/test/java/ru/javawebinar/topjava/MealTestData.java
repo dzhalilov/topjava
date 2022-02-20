@@ -1,4 +1,4 @@
-package ru.javawebinar.topjava.service;
+package ru.javawebinar.topjava;
 
 import ru.javawebinar.topjava.model.Meal;
 

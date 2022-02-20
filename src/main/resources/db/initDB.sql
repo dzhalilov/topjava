@@ -27,12 +27,10 @@ CREATE TABLE user_roles
 
 CREATE TABLE meals (
     id          INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
-    dateTime    TIMESTAMP DEFAULT now() NOT NULL,
+    date_time   TIMESTAMP NOT NULL,
     description TEXT NOT NULL,
     calories    INTEGER NOT NULL,
-    userId     INTEGER NOT NULL,
-    CONSTRAINT user_time_reg UNIQUE (dateTime, userId),
-    FOREIGN KEY (userId) REFERENCES users (id) ON DELETE CASCADE
+    user_id     INTEGER NOT NULL,
+    CONSTRAINT user_time_uniq UNIQUE (user_id, date_time),
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
-CREATE INDEX ON meals (dateTime, userId);
-SET enable_seqscan = OFF;
