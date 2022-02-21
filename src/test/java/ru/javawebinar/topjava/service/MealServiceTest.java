@@ -27,10 +27,6 @@ import static ru.javawebinar.topjava.MealTestData.*;
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
-    public static final int USER_ID = 100000;
-    public static final int ADMIN_ID = 100001;
-    public static final int NO_FOUND_ID = 999999;
-    public static final String NEW_DESCRIPTION = "Обновлённая еда";
 
     static {
         SLF4JBridgeHandler.install();
@@ -47,7 +43,7 @@ public class MealServiceTest {
 
     @Test(expected = EmptyResultDataAccessException.class)
     public void getNoFoundId() {
-        Meal meal = mealService.get(NO_FOUND_ID, USER_ID);
+        Meal meal = mealService.get(NOT_FOUND, USER_ID);
     }
 
     @Test(expected = NotFoundException.class)
@@ -93,13 +89,13 @@ public class MealServiceTest {
 
     @Test(expected = EmptyResultDataAccessException.class)
     public void updateWithWrongId() {
-        meal1.setId(NO_FOUND_ID);
+        meal1.setId(NOT_FOUND);
         mealService.update(meal1, USER_ID);
     }
 
     @Test(expected = NotFoundException.class)
     public void updateWithWrongUserId() {
-        mealService.update(meal1, NO_FOUND_ID);
+        mealService.update(meal1, NOT_FOUND);
     }
 
     @Test
