@@ -23,17 +23,16 @@ public class MealTestData {
     public static final int NEW_CALORIES = 550;
     public static final LocalDate startDate = LocalDate.of(2022, 2, 19);
     // User's meals
-    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    public static final Meal meal1 = new Meal(counter++, LocalDateTime.of(2022, 2, 18, 8, 0), "Завтрак User", 300);
-    public static final Meal meal2 = new Meal(counter++, LocalDateTime.of(2022, 2, 18, 12, 30), "Обед User", 1200);
-    public static final Meal meal3 = new Meal(counter++, LocalDateTime.of(2022, 2, 18, 20, 0), "Ужин User", 600);
-    public static final Meal meal4 = new Meal(counter++, LocalDateTime.of(2022, 2, 19, 7, 10), "Завтрак User", 250);
-    public static final Meal meal5 = new Meal(counter++, LocalDateTime.of(2022, 2, 19, 13, 0), "Обед User", 700);
-    public static final Meal meal6 = new Meal(counter++, LocalDateTime.of(2022, 2, 19, 20, 0), "Ужин User", 1000);
+    public static final Meal meal1User = new Meal(counter++, LocalDateTime.of(2022, 2, 18, 8, 0), "Завтрак User", 300);
+    public static final Meal meal2User = new Meal(counter++, LocalDateTime.of(2022, 2, 18, 12, 30), "Обед User", 1200);
+    public static final Meal meal3User = new Meal(counter++, LocalDateTime.of(2022, 2, 18, 20, 0), "Ужин User", 600);
+    public static final Meal meal4User = new Meal(counter++, LocalDateTime.of(2022, 2, 19, 7, 10), "Завтрак User", 250);
+    public static final Meal meal5User = new Meal(counter++, LocalDateTime.of(2022, 2, 19, 13, 0), "Обед User", 700);
+    public static final Meal meal6User = new Meal(counter++, LocalDateTime.of(2022, 2, 19, 20, 0), "Ужин User", 1000);
     // Admin's meals
-    public static final Meal meal7 = new Meal(counter++, LocalDateTime.of(2022, 2, 19, 9, 0), "Завтрак Admin", 50);
-    public static final Meal meal8 = new Meal(counter++, LocalDateTime.of(2022, 2, 19, 12, 0), "Обед Admin", 1400);
-    public static final Meal meal9 = new Meal(counter++, LocalDateTime.of(2022, 2, 19, 22, 0), "Ужин Admin", 500);
+    public static final Meal meal7Admin = new Meal(counter++, LocalDateTime.of(2022, 2, 19, 9, 0), "Завтрак Admin", 50);
+    public static final Meal meal8Admin = new Meal(counter++, LocalDateTime.of(2022, 2, 19, 12, 0), "Обед Admin", 1400);
+    public static final Meal meal9Admin = new Meal(counter++, LocalDateTime.of(2022, 2, 19, 22, 0), "Ужин Admin", 500);
 
     public static Meal getNew() {
         return new Meal(null, LocalDateTime.of(2022, 2, 20, 0, 0), "Tea", 50);
