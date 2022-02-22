@@ -36,20 +36,20 @@ public class InMemoryMealRepository implements MealRepository {
     private final Map<Integer, InMemoryBaseRepository<Meal>> usersMealsMap = new ConcurrentHashMap<>();
 
     {
-//        MealsUtil.meals.forEach(meal -> save(meal, USER_ID));
-//        save(new Meal(LocalDateTime.of(2015, Month.JUNE, 1, 14, 0), "Админ ланч", 510), ADMIN_ID);
-//        save(new Meal(LocalDateTime.of(2015, Month.JUNE, 1, 21, 0), "Админ ужин", 1500), ADMIN_ID);
+        MealsUtil.meals.forEach(meal -> save(meal, USER_ID));
+        save(new Meal(LocalDateTime.of(2015, Month.JUNE, 1, 14, 0), "Админ ланч", 510), ADMIN_ID);
+        save(new Meal(LocalDateTime.of(2015, Month.JUNE, 1, 21, 0), "Админ ужин", 1500), ADMIN_ID);
         // User's meals
-        save(new Meal(counter++, LocalDateTime.of(2022, 2, 18, 8, 0), "Завтрак User", 300), USER_ID);
-        save(new Meal(counter++, LocalDateTime.of(2022, 2, 18, 12, 30), "Обед User", 1200), USER_ID);
-        save(new Meal(counter++, LocalDateTime.of(2022, 2, 18, 20, 0), "Ужин User", 600), USER_ID);
-        save(new Meal(counter++, LocalDateTime.of(2022, 2, 19, 7, 10), "Завтрак User", 250), USER_ID);
-        save(new Meal(counter++, LocalDateTime.of(2022, 2, 19, 13, 0), "Обед User", 700), USER_ID);
-        save(new Meal(counter++, LocalDateTime.of(2022, 2, 19, 20, 0), "Ужин User", 1000), USER_ID);
-        // Admin's meals
-        save(new Meal(counter++, LocalDateTime.of(2022, 2, 19, 9, 0), "Завтрак Admin", 50), ADMIN_ID);
-        save(new Meal(counter++, LocalDateTime.of(2022, 2, 19, 12, 0), "Обед Admin", 1400), ADMIN_ID);
-        save(new Meal(counter++, LocalDateTime.of(2022, 2, 19, 22, 0), "Ужин Admin", 500), ADMIN_ID);
+//        save(new Meal(counter++, LocalDateTime.of(2022, 2, 18, 8, 0), "Завтрак User", 300), USER_ID);
+//        save(new Meal(counter++, LocalDateTime.of(2022, 2, 18, 12, 30), "Обед User", 1200), USER_ID);
+//        save(new Meal(counter++, LocalDateTime.of(2022, 2, 18, 20, 0), "Ужин User", 600), USER_ID);
+//        save(new Meal(counter++, LocalDateTime.of(2022, 2, 19, 7, 10), "Завтрак User", 250), USER_ID);
+//        save(new Meal(counter++, LocalDateTime.of(2022, 2, 19, 13, 0), "Обед User", 700), USER_ID);
+//        save(new Meal(counter++, LocalDateTime.of(2022, 2, 19, 20, 0), "Ужин User", 1000), USER_ID);
+//        // Admin's meals
+//        save(new Meal(counter++, LocalDateTime.of(2022, 2, 19, 9, 0), "Завтрак Admin", 50), ADMIN_ID);
+//        save(new Meal(counter++, LocalDateTime.of(2022, 2, 19, 12, 0), "Обед Admin", 1400), ADMIN_ID);
+//        save(new Meal(counter++, LocalDateTime.of(2022, 2, 19, 22, 0), "Ужин Admin", 500), ADMIN_ID);
 
     }
 
