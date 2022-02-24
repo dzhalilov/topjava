@@ -34,8 +34,8 @@ public class MealServiceTest {
 
     @Test
     public void get() {
-        Meal meal = mealService.get(meal1User.getId(), USER_ID);
-        assertMatch(meal, meal1User);
+        Meal meal = mealService.get(USER_MEAL1.getId(), USER_ID);
+        assertMatch(meal, USER_MEAL1);
     }
 
     @Test
@@ -45,19 +45,19 @@ public class MealServiceTest {
 
     @Test
     public void getWithWrongUserId() {
-        Assert.assertThrows(NotFoundException.class, () -> mealService.get(meal7Admin.getId(), USER_ID));
+        Assert.assertThrows(NotFoundException.class, () -> mealService.get(ADMIN_MEAL7.getId(), USER_ID));
     }
 
     @Test
     public void delete() {
-        mealService.delete(meal1User.getId(), USER_ID);
-        Assert.assertThrows(NotFoundException.class, () -> mealService.get(meal1User.getId(), USER_ID));
+        mealService.delete(USER_MEAL1.getId(), USER_ID);
+        Assert.assertThrows(NotFoundException.class, () -> mealService.get(USER_MEAL1.getId(), USER_ID));
     }
 
     @Test
     public void deleteWithWrongUserId() {
-        Assert.assertThrows(NotFoundException.class, () -> mealService.delete(meal1User.getId(), ADMIN_ID));
-        assertMatch(mealService.get(meal1User.getId(), USER_ID), meal1User);
+        Assert.assertThrows(NotFoundException.class, () -> mealService.delete(USER_MEAL1.getId(), ADMIN_ID));
+        assertMatch(mealService.get(USER_MEAL1.getId(), USER_ID), USER_MEAL1);
     }
 
     @Test
@@ -68,59 +68,59 @@ public class MealServiceTest {
     @Test
     public void getBetweenInclusiveStartDateNull() {
         List<Meal> meals = mealService.getBetweenInclusive(startDate, null, USER_ID);
-        assertMatch(meals, meal6User, meal5User, meal4User);
+        assertMatch(meals, USER_MEAL6, USER_MEAL5, USER_MEAL4);
     }
 
     @Test
     public void getBetweenInclusiveAfterAddMealStartDateEndDate() {
-        mealService.create(getNew(), USER_ID);
+        mealService.create(boundaryTimeMeal(), USER_ID);
         List<Meal> meals = mealService.getBetweenInclusive(startDate, startDate, USER_ID);
-        assertMatch(meals, meal6User, meal5User, meal4User);
+        assertMatch(meals, USER_MEAL6, USER_MEAL5, USER_MEAL4);
     }
 
     @Test
     public void getBetweenInclusiveNullNull() {
         List<Meal> meals = mealService.getBetweenInclusive(null, null, USER_ID);
-        assertMatch(meals, meal6User, meal5User, meal4User, meal3User, meal2User, meal1User);
+        assertMatch(meals, USER_MEAL6, USER_MEAL5, USER_MEAL4, USER_MEAL3, USER_MEAL2, USER_MEAL1);
     }
 
     @Test
-    public void getBetweenInclusiveStartDateEndDate() {
+    public void getBetweenInclusiveWithoutBoundaryTimeMeal() {
         List<Meal> meals = mealService.getBetweenInclusive(startDate, startDate, USER_ID);
-        assertMatch(meals, meal6User, meal5User, meal4User);
+        assertMatch(meals, USER_MEAL6, USER_MEAL5, USER_MEAL4);
     }
 
     @Test
     public void getAll() {
         List<Meal> meals = mealService.getAll(ADMIN_ID);
-        assertMatch(meals, meal9Admin, meal8Admin, meal7Admin);
+        assertMatch(meals, ADMIN_MEAL9, ADMIN_MEAL8, ADMIN_MEAL7);
     }
 
     @Test
     public void update() {
-        Meal meal = new Meal(meal1User.getId(), NEW_DATE_TIME, NEW_DESCRIPTION, NEW_CALORIES);
-        Meal actual = new Meal(meal1User.getId(), NEW_DATE_TIME, NEW_DESCRIPTION, NEW_CALORIES);
+        Meal meal = new Meal(USER_MEAL1.getId(), NEW_DATE_TIME, NEW_DESCRIPTION, NEW_CALORIES);
+        Meal actual = new Meal(USER_MEAL1.getId(), NEW_DATE_TIME, NEW_DESCRIPTION, NEW_CALORIES);
         mealService.update(meal, USER_ID);
-        Meal mealResult = mealService.get(meal1User.getId(), USER_ID);
+        Meal mealResult = mealService.get(USER_MEAL1.getId(), USER_ID);
         assertMatch(actual, mealResult);
     }
 
     @Test
     public void updateWithWrongId() {
-        Meal meal = new Meal(NOT_FOUND, meal1User.getDateTime(), meal1User.getDescription(), meal1User.getCalories());
+        Meal meal = new Meal(NOT_FOUND, USER_MEAL1.getDateTime(), USER_MEAL1.getDescription(), USER_MEAL1.getCalories());
         Assert.assertThrows(NotFoundException.class, () -> mealService.update(meal, USER_ID));
     }
 
     @Test
     public void updateWithWrongUserId() {
-        Assert.assertThrows(NotFoundException.class, () -> mealService.update(meal1User, NOT_FOUND));
-        assertMatch(mealService.get(meal1User.getId(), USER_ID), meal1User);
+        Assert.assertThrows(NotFoundException.class, () -> mealService.update(USER_MEAL1, NOT_FOUND));
+        assertMatch(mealService.get(USER_MEAL1.getId(), USER_ID), USER_MEAL1);
     }
 
     @Test
     public void create() {
-        Meal created = mealService.create(getNew(), ADMIN_ID);
-        Meal actual = getNew();
+        Meal created = mealService.create(boundaryTimeMeal(), ADMIN_ID);
+        Meal actual = boundaryTimeMeal();
         actual.setId(counter);
         assertMatch(actual, created);
         assertMatch(actual, mealService.get(counter, ADMIN_ID));
@@ -128,7 +128,7 @@ public class MealServiceTest {
 
     @Test
     public void createWithDuplicateDate() {
-        Meal meal = new Meal(null, meal8Admin.getDateTime(), NEW_DESCRIPTION, NEW_CALORIES);
+        Meal meal = new Meal(null, ADMIN_MEAL8.getDateTime(), NEW_DESCRIPTION, NEW_CALORIES);
         Assert.assertThrows(DuplicateKeyException.class, () -> mealService.create(meal, ADMIN_ID));
     }
 }
