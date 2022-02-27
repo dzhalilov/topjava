@@ -12,6 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.TransactionSystemException;
 import ru.javawebinar.topjava.TimingRules;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
@@ -94,6 +95,13 @@ public class MealServiceTest {
         Meal updated = getUpdated();
         service.update(updated, USER_ID);
         MEAL_MATCHER.assertMatch(service.get(MEAL1_ID, USER_ID), getUpdated());
+    }
+
+    @Test
+    public void updateWithNegativeCalories() {
+        Meal updated = getUpdated();
+        updated.setCalories(-100);
+        assertThrows(TransactionSystemException.class, () -> service.update(updated, USER_ID));
     }
 
     @Test
