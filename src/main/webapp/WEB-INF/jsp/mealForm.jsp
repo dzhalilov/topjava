@@ -11,7 +11,6 @@
 <section>
     <h3><a href="/topjava/"/><spring:message code="app.home"/></h3>
     <hr>
-<%--    <h2>${param.action == 'create' ? 'Create meal' : 'Edit meal'}</h2>--%>
     <h2>
         <c:choose>
             <c:when test="${param.action == 'create'}">
