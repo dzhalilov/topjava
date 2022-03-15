@@ -40,7 +40,7 @@ public class JspMealController {
     @GetMapping("/meals")
     public String switcher(HttpServletRequest request) {
         String action = request.getParameter("action");
-        switch (action == null ? "all" : action) {
+        switch (action == null ? "default" : action) {
             case "delete" -> {
                 int id = getId(request);
                 return delete(id, request);
