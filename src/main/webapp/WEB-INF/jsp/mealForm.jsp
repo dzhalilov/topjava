@@ -4,26 +4,21 @@
 
 <html>
 <jsp:include page="fragments/headTag.jsp"/>
-<head>
-    <title><spring:message code="meal.meal"/></title>
-    <link rel="stylesheet" href="resources/css/style.css">
-</head>
 <body>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 <section>
-    <h3><a href="/topjava/"/><spring:message code="app.home"/></h3>
-    <hr>
-    <h2>
-        <c:choose>
-            <c:when test="${param.action == 'create'}">
-                <spring:message code="addMeal.create"/>
-            </c:when>
-            <c:otherwise>
-                <spring:message code="addMeal.edit"/>
-            </c:otherwise>
-        </c:choose>
-    </h2>
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
+    <h2>${meal.description.length() gt 0 ? '<spring:message code="addMeal.edit"/>' : '<spring:message code="addMeal.create"/>'}</h2>
+<%--    <h2>--%>
+<%--        <c:choose>--%>
+<%--            <c:when test="${param.action == 'create'}">--%>
+<%--                <spring:message code="addMeal.create"/>--%>
+<%--            </c:when>--%>
+<%--            <c:otherwise>--%>
+<%--                <spring:message code="addMeal.edit"/>--%>
+<%--            </c:otherwise>--%>
+<%--        </c:choose>--%>
+<%--    </h2>--%>
     <form method="post" action="meals">
         <input type="hidden" name="id" value="${meal.id}">
         <dl>

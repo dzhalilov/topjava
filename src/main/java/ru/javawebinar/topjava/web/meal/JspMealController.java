@@ -1,8 +1,7 @@
-package ru.javawebinar.topjava.web;
+package ru.javawebinar.topjava.web.meal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.web.SecurityUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,7 +30,6 @@ import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 public class JspMealController {
     private static final Logger log = LoggerFactory.getLogger(JspMealController.class);
 
-    @Autowired
     private final MealService mealService;
 
     public JspMealController(MealService mealService) {
@@ -38,12 +37,12 @@ public class JspMealController {
     }
 
     @GetMapping("/meals")
-    public String switcher(HttpServletRequest request) {
+    public String switcher(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String action = request.getParameter("action");
         switch (action == null ? "default" : action) {
             case "delete" -> {
                 int id = getId(request);
-                return delete(id, request);
+                delete(id, response);
             }
             case "create" -> {
                 return create(request);
@@ -59,7 +58,7 @@ public class JspMealController {
     }
 
     @PostMapping("/meals")
-    public void updating(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void createOrUpdate(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Meal meal = new Meal(
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
@@ -77,34 +76,33 @@ public class JspMealController {
         response.sendRedirect("meals");
     }
 
-    public String create(HttpServletRequest request) {
+    private String create(HttpServletRequest request) {
         final Meal meal = new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000);
         request.setAttribute("meal", meal);
         return "mealForm";
     }
 
-    public String update(HttpServletRequest request) {
+    private String update(HttpServletRequest request) {
         final Meal meal = get(getId(request));
         request.setAttribute("meal", meal);
         return "mealForm";
     }
 
-    public String delete(int id, HttpServletRequest request) {
+    private void delete(int id, HttpServletResponse response) throws IOException {
         int userId = SecurityUtil.authUserId();
         log.info("delete meal with id {}", id);
         mealService.delete(id, userId);
-        request.setAttribute("meals", MealsUtil.getTos(mealService.getAll(userId), SecurityUtil.authUserCaloriesPerDay()));
-        return "meals";
+        response.sendRedirect("meals");
     }
 
-    public String getAll(HttpServletRequest request) {
+    private String getAll(HttpServletRequest request) {
         int userId = SecurityUtil.authUserId();
         log.info("getAll for user {}", userId);
         request.setAttribute("meals", MealsUtil.getTos(mealService.getAll(userId), SecurityUtil.authUserCaloriesPerDay()));
         return "meals";
     }
 
-    public String getWithFilter(HttpServletRequest request) {
+    private String getWithFilter(HttpServletRequest request) {
         int userId = SecurityUtil.authUserId();
         LocalDate startDate = parseLocalDate(Objects.requireNonNullElse(request.getParameter("startDate"), "1900-01-01"));
         LocalDate endDate = parseLocalDate(Objects.requireNonNullElse(request.getParameter("endDate"), "3000-12-31"));

@@ -9,10 +9,12 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 @Transactional(readOnly = true)
@@ -62,7 +64,13 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     public User get(int id) {
         List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE id=?", ROW_MAPPER, id);
-        return DataAccessUtils.singleResult(users);
+        User user = DataAccessUtils.singleResult(users);
+//        List<Role> roles = jdbcTemplate.queryForList("SELECT role FROM user_roles WHERE user_id=?", String.class, user.getId())
+//                .stream()
+//                .forEach(Role::valueOf);
+
+//        user.setRoles(Role.valueOf(roles));
+        return user;
     }
 
     @Override
