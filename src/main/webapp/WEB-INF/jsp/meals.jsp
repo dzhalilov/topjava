@@ -9,7 +9,7 @@
 <jsp:include page="fragments/bodyHeader.jsp"/>
 <section>
     <h2><spring:message code="meal.title"/></h2>
-    <form method="get" action="meals">
+    <form method="get" action="${pageContext.request.contextPath}/meals/filter">
         <input type="hidden" name="action" value="filter">
         <dl>
             <dt><spring:message code="filter.fromDate"/></dt>
@@ -30,7 +30,7 @@
         <button type="submit"><spring:message code="filter.button"/></button>
     </form>
     <hr/>
-    <a href="meals?action=create"><spring:message code="meal.addMeal"/></a>
+    <a href="meals/create"><spring:message code="meal.addMeal"/></a>
     <br><br>
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
@@ -53,8 +53,8 @@
                 </td>
                 <td>${meal.description}</td>
                 <td>${meal.calories}</td>
-                <td><a href="meals?action=update&id=${meal.id}"><spring:message code="meal.update"/></a></td>
-                <td><a href="meals?action=delete&id=${meal.id}"><spring:message code="meal.delete"/></a></td>
+                <td><a href="meals/update/${meal.id}"><spring:message code="meal.update"/></a></td>
+                <td><a href="meals/delete?id=${meal.id}"><spring:message code="meal.delete"/></a></td>
             </tr>
         </c:forEach>
     </table>
