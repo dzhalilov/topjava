@@ -1,10 +1,7 @@
 package ru.javawebinar.topjava.repository.jdbc;
 
-import jdk.jfr.BooleanFlag;
-import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -16,12 +13,7 @@ import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.Validation;
 import java.util.*;
 
 @Repository
@@ -49,22 +41,10 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     @Transactional
     public User save(User user) {
-        @NotBlank
-        @Size(min = 2, max = 128)
-        String name = user.getName();
-        @Email
-        @NotBlank
-        @Size(max = 128)
-        String email = user.getEmail();
-        @NotBlank
-        @Size(min = 5, max = 128)
-        String password = user.getPassword();
-        @NotBlank
-        boolean enabled = user.isEnabled();
-        @NotNull
-        Date registered = user.getRegistered();
-        @Range(min = 10, max = 10000)
-        int caloriesPerDay = user.getCaloriesPerDay();
+        var event = Validation.buildDefaultValidatorFactory().getValidator().validate(user);
+        if (event.size() > 0) {
+            return null;
+        }
 
         BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(user);
 

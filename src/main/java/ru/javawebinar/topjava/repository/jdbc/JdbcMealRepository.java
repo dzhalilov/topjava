@@ -1,8 +1,6 @@
 package ru.javawebinar.topjava.repository.jdbc;
 
-import org.hibernate.validator.constraints.Range;
 import org.springframework.dao.support.DataAccessUtils;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -14,11 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 @Transactional(readOnly = true)
@@ -44,13 +42,10 @@ public class JdbcMealRepository implements MealRepository {
     @Override
     @Transactional
     public Meal save(Meal meal, int userId) {
-        @NotNull
-        LocalDateTime dateTime = meal.getDateTime();
-        @NotBlank
-        @Size(min = 2, max = 120)
-        String description = meal.getDescription();
-        @Range(min = 10, max = 5000)
-        int calories = meal.getCalories();
+        var event = Validation.buildDefaultValidatorFactory().getValidator().validate(meal);
+        if (event.size() > 0) {
+            return null;
+        }
 
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", meal.getId())
