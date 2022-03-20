@@ -8,17 +8,7 @@
 <jsp:include page="fragments/bodyHeader.jsp"/>
 <section>
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
-    <h2>${meal.description.length() gt 0 ? '<spring:message code="addMeal.edit"/>' : '<spring:message code="addMeal.create"/>'}</h2>
-<%--    <h2>--%>
-<%--        <c:choose>--%>
-<%--            <c:when test="${param.action == 'create'}">--%>
-<%--                <spring:message code="addMeal.create"/>--%>
-<%--            </c:when>--%>
-<%--            <c:otherwise>--%>
-<%--                <spring:message code="addMeal.edit"/>--%>
-<%--            </c:otherwise>--%>
-<%--        </c:choose>--%>
-<%--    </h2>--%>
+    <h2><spring:message code="addMeal.${meal.description.length() gt 0 ? 'edit' : 'create'}"/>
     <form method="post" action="${pageContext.request.contextPath}/meals">
         <input type="hidden" name="id" value="${meal.id}">
         <dl>
