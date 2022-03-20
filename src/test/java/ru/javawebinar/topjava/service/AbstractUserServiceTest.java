@@ -93,11 +93,12 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     public void addRoleToUser() {
-        User user = guest;
-        service.update(user);
+        User user = getNew();
+        service.create(user);
         user.setRoles(Collections.singletonList(Role.USER));
+        int id = user.id();
         service.update(user);
-        USER_MATCHER.assertMatch(service.get(GUEST_ID), user);
+        USER_MATCHER.assertMatch(service.get(id), user);
     }
 
     @Test
