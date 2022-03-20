@@ -11,9 +11,7 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.validation.ConstraintViolationException;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.UserTestData.*;
@@ -91,5 +89,22 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "mail@yandex.ru", "  ", Role.USER)));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "mail@yandex.ru", "password", 9, true, new Date(), Set.of())));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "mail@yandex.ru", "password", 10001, true, new Date(), Set.of())));
+    }
+
+    @Test
+    public void addRoleToUser() {
+        User user = guest;
+        service.update(user);
+        user.setRoles(Collections.singletonList(Role.USER));
+        service.update(user);
+        USER_MATCHER.assertMatch(service.get(GUEST_ID), user);
+    }
+
+    @Test
+    public void createUserWithRoles() {
+        User user = getNew();
+        user.setRoles(new HashSet<>(Arrays.asList(Role.USER, Role.ADMIN)));
+        User newUser = service.create(user);
+        USER_MATCHER.assertMatch(service.get(newUser.id()), user);
     }
 }

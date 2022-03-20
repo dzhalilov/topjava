@@ -1,8 +1,10 @@
 package ru.javawebinar.topjava.repository.jdbc;
 
-import org.hibernate.mapping.Collection;
+import jdk.jfr.BooleanFlag;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -14,11 +16,13 @@ import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.util.*;
 
 @Repository
 @Transactional(readOnly = true)
@@ -45,21 +49,35 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     @Transactional
     public User save(User user) {
+        @NotBlank
+        @Size(min = 2, max = 128)
+        String name = user.getName();
+        @Email
+        @NotBlank
+        @Size(max = 128)
+        String email = user.getEmail();
+        @NotBlank
+        @Size(min = 5, max = 128)
+        String password = user.getPassword();
+        @NotBlank
+        boolean enabled = user.isEnabled();
+        @NotNull
+        Date registered = user.getRegistered();
+        @Range(min = 10, max = 10000)
+        int caloriesPerDay = user.getCaloriesPerDay();
+
         BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(user);
 
         if (user.isNew()) {
             Number newKey = insertUser.executeAndReturnKey(parameterSource);
             user.setId(newKey.intValue());
-            for (Role role : user.getRoles()) {
-                jdbcTemplate.update("INSERT INTO user_roles (user_id, role) VALUES (?, ?)", user.getId(), role.toString());
-            }
+            addRolesIntoUserRolesTable(user);
         } else if (namedParameterJdbcTemplate.update("""
                    UPDATE users SET name=:name, email=:email, password=:password, 
                    registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id
                 """, parameterSource) != 0) {
-            for (Role role : user.getRoles()) {
-                jdbcTemplate.update("UPDATE user_roles SET role=? WHERE user_id=?", role.toString(), user.getId());
-            }
+            jdbcTemplate.update("DELETE FROM user_roles WHERE user_id=?", user.getId());
+            addRolesIntoUserRolesTable(user);
         } else {
             return null;
         }
@@ -88,8 +106,20 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     public List<User> getAll() {
         List<User> users = jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER);
-        List<Map<String, Object>> roles = jdbcTemplate.queryForList("SELECT * FROM user_roles");
-
+        List<Map<String, Object>> list = jdbcTemplate.queryForList("SELECT * FROM user_roles");
+        Map<Integer, Set<Role>> roles = new HashMap<>();
+        for (Map<String, Object> pair : list) {
+            int id = (int) pair.get("user_id");
+            Role role = Role.valueOf((String) pair.get("role"));
+            if (roles.containsKey(id)) {
+                roles.get(id).add(role);
+            } else {
+                roles.put(id, new HashSet<>(Arrays.asList(role)));
+            }
+        }
+        for (User user : users) {
+            user.setRoles(roles.get(user.getId()));
+        }
         return users;
     }
 
@@ -99,5 +129,11 @@ public class JdbcUserRepository implements UserRepository {
             user.setRoles(roles);
         }
         return user;
+    }
+
+    private void addRolesIntoUserRolesTable(User user) {
+        for (Role role : user.getRoles()) {
+            jdbcTemplate.update("INSERT INTO user_roles (user_id, role) VALUES (?, ?)", user.getId(), role.toString());
+        }
     }
 }
