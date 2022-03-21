@@ -4,7 +4,6 @@ import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
@@ -23,9 +22,6 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
 
     @Autowired
     protected MealService service;
-
-    @Autowired
-    private Environment environment;
 
     @Test
     public void delete() {
@@ -109,7 +105,7 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
 
     @Test
     public void createWithException() throws Exception {
-        Assume.assumeTrue(isJdbc(environment));
+        Assume.assumeTrue(isJdbc());
         validateRootCause(ConstraintViolationException.class, () -> service.create(new Meal(null, of(2015, Month.JUNE, 1, 18, 0), "  ", 300), USER_ID));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new Meal(null, null, "Description", 300), USER_ID));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new Meal(null, of(2015, Month.JUNE, 1, 18, 0), "Description", 9), USER_ID));

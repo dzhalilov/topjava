@@ -25,34 +25,31 @@ import java.util.Objects;
 
 import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalDate;
 import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalTime;
-import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
-import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 
 @Controller
 @RequestMapping("/meals")
-public class JspMealController extends AbstractController {
+public class JspMealController extends AbstractMealController {
 
     public JspMealController(MealService mealService) {
         super(mealService);
     }
 
-    @PostMapping()
-    public String createOrUpdate(Model model, HttpServletRequest request) throws IOException {
+    @PostMapping
+    public void createOrUpdate(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        int userId = SecurityUtil.authUserId();
         Meal meal = new Meal(
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
                 Integer.parseInt(request.getParameter("calories")));
-        int userId = SecurityUtil.authUserId();
         if (!StringUtils.hasLength(request.getParameter("id"))) {
-            checkNew(meal);
             log.info("create {} for user {}", meal, userId);
             mealService.create(meal, userId);
         } else {
-            assureIdConsistent(meal, getId(request));
+            meal.setId(getId(request));
             log.info("update {} for user {}", meal, userId);
             mealService.update(meal, userId);
         }
-        return getAll(model);
+        response.sendRedirect(request.getContextPath() + "/meals");
     }
 
     @GetMapping("/create")
@@ -78,7 +75,7 @@ public class JspMealController extends AbstractController {
         response.sendRedirect(request.getContextPath() + "/meals");
     }
 
-    @GetMapping()
+    @GetMapping
     public String getAll(Model model) {
         int userId = SecurityUtil.authUserId();
         log.info("getAll for user {}", userId);
@@ -105,9 +102,4 @@ public class JspMealController extends AbstractController {
         return Integer.parseInt(paramId);
     }
 
-    private Meal get(int id) {
-        int userId = SecurityUtil.authUserId();
-        log.info("get meal {} for user {}", id, userId);
-        return mealService.get(id, userId);
-    }
 }

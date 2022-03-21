@@ -5,6 +5,7 @@ import org.junit.Rule;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.Stopwatch;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -29,6 +30,9 @@ import static ru.javawebinar.topjava.util.ValidationUtil.getRootCause;
 @ActiveProfiles(resolver = ActiveDbProfileResolver.class)
 public abstract class AbstractServiceTest {
 
+    @Autowired
+    protected Environment environment;
+
     @ClassRule
     public static ExternalResource summary = TimingRules.SUMMARY;
 
@@ -45,7 +49,8 @@ public abstract class AbstractServiceTest {
             }
         });
     }
-    public boolean isJdbc(Environment environment){
+
+    public boolean isJdbc() {
         return Arrays.stream(environment.getActiveProfiles()).noneMatch(env -> (env.equalsIgnoreCase(Profiles.JDBC)));
     }
 }

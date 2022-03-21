@@ -16,15 +16,9 @@ import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 
 @Controller
-public class MealRestController extends AbstractController {
+public class MealRestController extends AbstractMealController {
     public MealRestController(MealService mealService) {
         super(mealService);
-    }
-
-    public Meal get(int id) {
-        int userId = SecurityUtil.authUserId();
-        log.info("get meal {} for user {}", id, userId);
-        return mealService.get(id, userId);
     }
 
     public void delete(int id) {
