@@ -12,7 +12,7 @@ import static ru.javawebinar.topjava.Profiles.JPA;
 @ActiveProfiles(JPA)
 public class JpaUserServiceTest extends AbstractUserServiceTest {
     @Autowired
-    protected JpaUtil jpaUtil;
+    private JpaUtil jpaUtil;
 
     @Autowired
     private CacheManager cacheManager;

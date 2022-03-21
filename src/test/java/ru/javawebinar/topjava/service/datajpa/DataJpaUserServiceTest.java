@@ -22,7 +22,7 @@ import static ru.javawebinar.topjava.UserTestData.USER_MATCHER;
 public class DataJpaUserServiceTest extends AbstractUserServiceTest {
 
     @Autowired
-    protected JpaUtil jpaUtil;
+    private JpaUtil jpaUtil;
 
     @Autowired
     private CacheManager cacheManager;
