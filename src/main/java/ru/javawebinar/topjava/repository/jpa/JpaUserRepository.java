@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.repository.jpa;
 
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.User;
@@ -7,6 +8,7 @@ import ru.javawebinar.topjava.repository.UserRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.Arrays;
 import java.util.List;
 
 @Repository
@@ -58,11 +60,11 @@ public class JpaUserRepository implements UserRepository {
 
     @Override
     public User getByEmail(String email) {
-//        List<User> users =
-        return em.createNamedQuery(User.BY_EMAIL, User.class)
-                .setParameter(1, email).getSingleResult();
-//                .getResultList();
-//        return DataAccessUtils.singleResult(users);
+        List<User> users =
+                em.createNamedQuery(User.BY_EMAIL, User.class)
+                        .setParameter(1, email)
+                        .getResultList();
+        return DataAccessUtils.singleResult(users);
     }
 
     @Override

@@ -1,8 +1,6 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import ru.javawebinar.topjava.UserTestData;
@@ -67,12 +65,18 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     }
 
     @Test
+    public void getByNotFoundEmail() {
+        String email = "notfound@unknown.com";
+        assertThrows(NotFoundException.class, () -> service.getByEmail(email));
+    }
+
+    @Test
     public void update() {
-//    public void getAal() {
         User updated = getUpdated();
         service.update(updated);
-        USER_MATCHER.assertMatch(service.get(USER_ID), getUpdated());
-//        USER_MATCHER.assertMatch(service.getAll(), getUpdated(), admin, guest);
+        USER_MATCHER.assertMatch(service.getAll(), admin, guest, getUpdated());
+        service.update(user);
+        USER_MATCHER.assertMatch(service.getAll(), admin, guest, user);
     }
 
     @Test
