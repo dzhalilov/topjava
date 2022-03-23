@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.util.MealsUtil;
@@ -36,7 +35,7 @@ public class JspMealController extends AbstractMealController {
     }
 
     @PostMapping
-    public ModelAndView createOrUpdate(HttpServletRequest request, ModelMap model) throws IOException {
+    public String createOrUpdate(HttpServletRequest request, ModelMap model) throws IOException {
         int userId = SecurityUtil.authUserId();
         Meal meal = new Meal(
                 LocalDateTime.parse(request.getParameter("dateTime")),
@@ -50,7 +49,7 @@ public class JspMealController extends AbstractMealController {
             log.info("update {} for user {}", meal, userId);
             mealService.update(meal, userId);
         }
-        return new ModelAndView("redirect:/meals", model);
+        return "redirect:/meals";
     }
 
     @GetMapping("/create")
@@ -68,12 +67,12 @@ public class JspMealController extends AbstractMealController {
     }
 
     @GetMapping("/delete")
-    public ModelAndView delete(HttpServletRequest request, ModelMap model) throws IOException {
+    public String delete(HttpServletRequest request, ModelMap model) throws IOException {
         int userId = SecurityUtil.authUserId();
         int id = getId(request);
         log.info("delete meal with id {}", id);
         mealService.delete(id, userId);
-        return new ModelAndView("redirect:/meals", model);
+        return "redirect:/meals";
     }
 
     @GetMapping

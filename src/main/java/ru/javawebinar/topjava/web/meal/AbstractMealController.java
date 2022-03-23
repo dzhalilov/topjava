@@ -7,7 +7,7 @@ import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
 public abstract class AbstractMealController {
-    protected static final Logger log = LoggerFactory.getLogger(AbstractMealController.class);
+    protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
     protected final MealService mealService;
 
