@@ -20,45 +20,4 @@ public class MealRestController extends AbstractMealController {
     public MealRestController(MealService mealService) {
         super(mealService);
     }
-
-    public void delete(int id) {
-        int userId = SecurityUtil.authUserId();
-        log.info("delete meal {} for user {}", id, userId);
-        mealService.delete(id, userId);
-    }
-
-    public List<MealTo> getAll() {
-        int userId = SecurityUtil.authUserId();
-        log.info("getAll for user {}", userId);
-        return MealsUtil.getTos(mealService.getAll(userId), SecurityUtil.authUserCaloriesPerDay());
-    }
-
-    public Meal create(Meal meal) {
-        int userId = SecurityUtil.authUserId();
-        checkNew(meal);
-        log.info("create {} for user {}", meal, userId);
-        return mealService.create(meal, userId);
-    }
-
-    public void update(Meal meal, int id) {
-        int userId = SecurityUtil.authUserId();
-        assureIdConsistent(meal, id);
-        log.info("update {} for user {}", meal, userId);
-        mealService.update(meal, userId);
-    }
-
-    /**
-     * <ol>Filter separately
-     * <li>by date</li>
-     * <li>by time for every date</li>
-     * </ol>
-     */
-    public List<MealTo> getBetween(@Nullable LocalDate startDate, @Nullable LocalTime startTime,
-                                   @Nullable LocalDate endDate, @Nullable LocalTime endTime) {
-        int userId = SecurityUtil.authUserId();
-        log.info("getBetween dates({} - {}) time({} - {}) for user {}", startDate, endDate, startTime, endTime, userId);
-
-        List<Meal> mealsDateFiltered = mealService.getBetweenInclusive(startDate, endDate, userId);
-        return MealsUtil.getFilteredTos(mealsDateFiltered, SecurityUtil.authUserCaloriesPerDay(), startTime, endTime);
-    }
 }

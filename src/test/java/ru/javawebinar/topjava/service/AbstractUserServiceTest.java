@@ -4,6 +4,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.dao.DataAccessException;
 import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.Role;
@@ -21,6 +22,9 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Autowired
     protected UserService service;
+
+    @Autowired
+    protected CacheManager cacheManager;
 
     @Test
     public void create() {
@@ -73,14 +77,14 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    public void /*update*/a() {
+    public void update() {
         User updated = getUpdated();
         service.update(updated);
         USER_MATCHER.assertMatch(service.getAll(), admin, guest, getUpdated());
     }
 
     @Test
-    public void /*getAll*/ab() {
+    public void getAll() {
         List<User> all = service.getAll();
         USER_MATCHER.assertMatch(all, admin, guest, user);
     }
@@ -108,6 +112,14 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     public void createUserWithRoles() {
         User user = getNew();
         user.setRoles(new HashSet<>(Arrays.asList(Role.USER, Role.ADMIN)));
+        User newUser = service.create(user);
+        USER_MATCHER.assertMatch(service.get(newUser.id()), user);
+    }
+
+    @Test
+    public void createUserWithoutRoles() {
+        User user = getNew();
+        user.setRoles(null);
         User newUser = service.create(user);
         USER_MATCHER.assertMatch(service.get(newUser.id()), user);
     }

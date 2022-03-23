@@ -36,18 +36,16 @@ public class JspMealController extends AbstractMealController {
 
     @PostMapping
     public String createOrUpdate(HttpServletRequest request, ModelMap model) throws IOException {
-        int userId = SecurityUtil.authUserId();
         Meal meal = new Meal(
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
                 Integer.parseInt(request.getParameter("calories")));
         if (!StringUtils.hasLength(request.getParameter("id"))) {
-            log.info("create {} for user {}", meal, userId);
-            mealService.create(meal, userId);
+            create(meal);
         } else {
-            meal.setId(getId(request));
-            log.info("update {} for user {}", meal, userId);
-            mealService.update(meal, userId);
+            int id = getId(request);
+            meal.setId(id);
+            update(meal, id);
         }
         return "redirect:/meals";
     }
@@ -67,33 +65,25 @@ public class JspMealController extends AbstractMealController {
     }
 
     @GetMapping("/delete")
-    public String delete(HttpServletRequest request, ModelMap model) throws IOException {
-        int userId = SecurityUtil.authUserId();
+    public String delete(HttpServletRequest request) throws IOException {
         int id = getId(request);
-        log.info("delete meal with id {}", id);
-        mealService.delete(id, userId);
+        delete(id);
         return "redirect:/meals";
     }
 
     @GetMapping
     public String getAll(Model model) {
-        int userId = SecurityUtil.authUserId();
-        log.info("getAll for user {}", userId);
-        model.addAttribute("meals", MealsUtil.getTos(mealService.getAll(userId), SecurityUtil.authUserCaloriesPerDay()));
+        model.addAttribute("meals", getAll());
         return "meals";
     }
 
     @GetMapping("/filter")
     public String getWithFilter(HttpServletRequest request) {
-        int userId = SecurityUtil.authUserId();
         LocalDate startDate = parseLocalDate(request.getParameter("startDate"));
         LocalDate endDate = parseLocalDate(request.getParameter("endDate"));
         LocalTime startTime = parseLocalTime(request.getParameter("startTime"));
         LocalTime endTime = parseLocalTime(request.getParameter("endTime"));
-        log.info("getBetween dates({} - {}) time({} - {}) for user {}", startDate, endDate, startTime, endTime, userId);
-
-        List<Meal> mealsDateFiltered = mealService.getBetweenInclusive(startDate, endDate, userId);
-        request.setAttribute("meals", MealsUtil.getFilteredTos(mealsDateFiltered, SecurityUtil.authUserCaloriesPerDay(), startTime, endTime));
+        request.setAttribute("meals", getBetween(startDate, startTime, endDate, endTime));
         return "meals";
     }
 
