@@ -85,8 +85,8 @@ class MealRestControllerTest extends AbstractControllerTest {
         LocalDateTime dateTime = LocalDateTime.of(2020, 01, 31, 20, 00);
         List<Meal> mealsDateFiltered = mealService.getBetweenInclusive(dateTime.toLocalDate(), null, USER_ID);
         perform(MockMvcRequestBuilders.get(REST_MEAL + "filter")
-                .param("startDate", String.valueOf(dateTime))
-                .param("endTime", String.valueOf(dateTime)))
+                .param("startDate", String.valueOf(dateTime.toLocalDate()))
+                .param("endTime", String.valueOf(dateTime.toLocalTime())))
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(MEAL_TO_MATCHER.contentJson(
