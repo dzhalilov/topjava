@@ -14,9 +14,6 @@ import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.SecurityUtil;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -82,15 +79,35 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getBetween() throws Exception {
-        LocalDateTime dateTime = LocalDateTime.of(2020, 01, 31, 20, 00);
-        List<Meal> mealsDateFiltered = mealService.getBetweenInclusive(dateTime.toLocalDate(), null, USER_ID);
-        perform(MockMvcRequestBuilders.get(REST_MEAL + "filter")
-                .param("startDate", String.valueOf(dateTime.toLocalDate()))
-                .param("endTime", String.valueOf(dateTime.toLocalTime())))
+        perform(MockMvcRequestBuilders.get(REST_MEAL + "filter?"
+                + "startDate=2020-01-31"
+                + "&endTime=20:00"))
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MEAL_TO_MATCHER.contentJson(
-                        MealsUtil.getFilteredTos(mealsDateFiltered, SecurityUtil.authUserCaloriesPerDay(),
-                                null, dateTime.toLocalTime())));
+                .andExpect(MEAL_TO_MATCHER.contentJson(mealTo6, mealTo5, mealTo4));
+    }
+
+    @Test
+    void getBetweenAllLimitation() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_MEAL + "filter?"
+                + "startDate=2020-01-30"
+                + "&endDate=2020-01-31"
+                + "&startTime=12:00"
+                + "&endTime=20:00"))
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MEAL_TO_MATCHER.contentJson(mealTo6, mealTo2));
+    }
+
+    @Test
+    void getBetweenWithOutLimitation() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_MEAL + "filter?"
+                + "startDate="
+                + "&endDate="
+                + "&startTime="
+                + "&endTime="))
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MEAL_TO_MATCHER.contentJson(mealTo7, mealTo6, mealTo5, mealTo4, mealTo3, mealTo2, mealTo1));
     }
 }

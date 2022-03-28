@@ -5,6 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 
 import java.net.URI;
@@ -62,5 +63,14 @@ public class AdminRestController extends AbstractUserController {
     @GetMapping("/with-meals")
     public User getWithMeals() {
         return super.getWithMeals(authUserId());
+    }
+
+    @GetMapping("/with-meals/{id}")
+    public User getWithMeals(@PathVariable int id) {
+        if (get(authUserId()).getRoles().contains(Role.ADMIN)) {
+            return super.getWithMeals(id);
+        } else {
+            return super.getWithMeals(authUserId());
+        }
     }
 }
