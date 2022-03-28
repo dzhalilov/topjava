@@ -1,1 +1,43 @@
-{"swagger":"2.0","info":{"version":"Swagger 2.0","title":"http://localhost:8080"},"basePath":"","paths":{"/topjava/rest/admin/users":{"get":{"operationId":"users","parameters":[],"responses":{"500":{},"401":{},"200":{}}},"post":{"operationId":"users","consumes":["application/json"],"parameters":[{"in":"body","name":"body","description":"Request body","required":true}],"responses":{"500":{},"201":{}}}},"/topjava/rest/admin/users/100000":{"get":{"operationId":"users","parameters":[],"responses":{"500":{},"200":{}}},"put":{"operationId":"users","consumes":["application/json"],"parameters":[{"in":"body","name":"body","description":"Request body","required":true}],"responses":{"405":{},"500":{},"200":{},"204":{}}}},"/topjava/rest/profile":{"get":{"operationId":"profile","parameters":[],"responses":{"500":{},"200":{}}},"put":{"operationId":"profile","consumes":["application/json"],"parameters":[{"in":"body","name":"body","description":"Request body","required":true}],"responses":{"500":{},"405":{},"201":{},"200":{}}},"delete":{"operationId":"profile","consumes":["application/json"],"parameters":[],"responses":{"200":{},"500":{},"204":{}}}},"/topjava/rest/meals":{"get":{"operationId":"meals","parameters":[],"responses":{"200":{}}},"post":{"operationId":"meals","consumes":["application/json"],"parameters":[{"in":"body","name":"body","description":"Request body","required":true}],"responses":{"400":{},"201":{}}}},"/topjava/rest/meals/filter":{"get":{"operationId":"filter","parameters":[{"name":"startDate","in":"query","required":false,"type":"string"},{"name":"endTime","in":"query","required":false,"type":"string"}],"responses":{"200":{}}}},"/topjava/rest/meals/100003":{"get":{"operationId":"100003","parameters":[],"responses":{"200":{}}},"put":{"operationId":"100003","consumes":["application/json","application/x-www-form-urlencoded","application/xml"],"parameters":[{"in":"body","name":"body","description":"Request body","required":true}],"responses":{"400":{},"415":{},"500":{},"204":{}}},"delete":{"operationId":"100003","consumes":["application/json"],"parameters":[],"responses":{"204":{},"500":{}}}}}}
+Description of calorie counting program commands.
+We take two entity: Meal and User and one DTO MealTo in JSON format.
+
+Components:
+    Meal:
+    {
+        "id": integer,
+        "dateTime": "yyyy-MM-ddThh:mm:ss",
+        "description": string,
+        "calories": integer
+    }
+
+    MealTo:
+    {
+        "id": integer,
+        "dateTime": "yyyy-MM-ddThh:mm:ss",
+        "description": string,
+        "calories": integer,
+        "excess": boolean
+    }
+
+    User:
+    {
+    
+    }
+
+
+-**Get all** user's meals. User's meals comes in JSON format in array of MealTo:
+    curl --location --request GET localhost:8080/topjava/rest/meals/
+
+-**Get meal** We can take meal by id:
+    curl --location --request GET localhost:8080/topjava/rest/meals/100005
+
+-**Delete meal** To delete meal by id by DELETE method:
+    curl --location --request DELETE localhost:8080/topjava/rest/meals/100003
+
+-**Create meal** To create meal we send Meal object in body request by POST method:
+    curl --location --request POST 'localhost:8080/topjava/rest/meals/' --data-raw '{"dateTime": "2020-01-30T10:00:00","description": "Tea","calories": 500 }'
+
+curl --header "Content-Type: application/json" \
+--request POST \
+--data '{"dateTime":"2020-01-30T10:00:00","description":"Tea", "calories":"50"}' \
+localhost:8080/topjava/rest/meals/
