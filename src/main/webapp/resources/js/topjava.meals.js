@@ -31,7 +31,7 @@ $(function () {
                     "data": "dateTime",
                     "render": function (data, type, row) {
                         if (type === "display") {
-                            return data.replaceAll("T", " ");
+                            return data.replace("T", " ");
                         }
                         return data;
                     }
