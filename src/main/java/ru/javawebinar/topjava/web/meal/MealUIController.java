@@ -14,7 +14,6 @@ import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/profile/meals", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -40,10 +39,9 @@ public class MealUIController extends AbstractMealController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<String> createOrUpdate(@Valid MealTo mealTo, BindingResult result) {
         if (result.hasErrors()) {
-            return ControllerUtil.errorsToString(result);
+            return ControllerUtil.errorsToResponseEntity(result);
         }
         if (mealTo.isNew()) {
             super.create(mealTo);
