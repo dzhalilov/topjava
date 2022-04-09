@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="webjars/noty/3.1.4/demo/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="webjars/datatables/1.11.4/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="webjars/noty/3.1.4/lib/noty.css"/>
+    <link rel="stylesheet" type="text/css" href="/jquery.datetimepicker.css"/>
     <link rel="shortcut icon" href="resources/images/icon-meal.png">
 
     <%--http://stackoverflow.com/a/24070373/548473--%>
