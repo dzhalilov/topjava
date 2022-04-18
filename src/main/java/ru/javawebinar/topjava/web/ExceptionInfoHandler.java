@@ -21,8 +21,6 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 
-import java.util.Map;
-
 import static ru.javawebinar.topjava.util.exception.ErrorType.*;
 
 @RestControllerAdvice(annotations = RestController.class)
@@ -38,7 +36,7 @@ public class ExceptionInfoHandler {
     }
 
     @ResponseStatus(HttpStatus.CONFLICT)  // 409
-    @ExceptionHandler({DataIntegrityViolationException.class})
+    @ExceptionHandler(DataIntegrityViolationException.class)
     public ErrorInfo conflict(HttpServletRequest req, DataIntegrityViolationException e) {
         String message = ValidationUtil.getRootCause(e).getMessage();
         if (message != null) {
