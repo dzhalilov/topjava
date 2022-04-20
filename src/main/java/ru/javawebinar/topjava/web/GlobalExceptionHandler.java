@@ -11,9 +11,9 @@ import org.springframework.web.servlet.ModelAndView;
 import ru.javawebinar.topjava.AuthorizedUser;
 import ru.javawebinar.topjava.to.UserTo;
 import ru.javawebinar.topjava.util.ValidationUtil;
+import ru.javawebinar.topjava.util.exception.ErrorInfo;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
 import java.util.Map;
 
 @ControllerAdvice
@@ -26,14 +26,22 @@ public class GlobalExceptionHandler {
         log.error("Exception at request " + req.getRequestURL(), e);
         Throwable rootCause = ValidationUtil.getRootCause(e);
         UserTo userTo = new UserTo();
-        System.out.println("-----------------------------------------");
-        for (Map.Entry<String, String[]> pair: req.getParameterMap().entrySet()) {
-            System.out.println(pair.getKey() + " = " + Arrays.toString(pair.getValue()));
+        for (Map.Entry<String, String[]> pair : req.getParameterMap().entrySet()) {
+            if ("name".contains(pair.getKey()) && pair.getValue().length > 0) {
+                userTo.setName(pair.getValue()[0]);
+            }
+            if ("email".contains(pair.getKey()) && pair.getValue().length > 0) {
+                userTo.setEmail(pair.getValue()[0]);
+            }
+            if ("caloriesPerDay".contains(pair.getKey()) && pair.getValue().length > 0) {
+                userTo.setCaloriesPerDay(Integer.valueOf(pair.getValue()[0]));
+            }
         }
-
+        ErrorInfo errorInfo = ExceptionInfoHandler.handleUniqEmailError(req, e);
         HttpStatus httpStatus = HttpStatus.CONFLICT;
 //        ModelAndView mav = new ModelAndView("profile", Map.of("exception", rootCause, "message", "User with this email already exists", "status", httpStatus));
-        ModelAndView mav = new ModelAndView("profile", Map.of("userTo", new UserTo(), "register", true));
+        ModelAndView mav = new ModelAndView("profile",
+                Map.of("exception", rootCause, "userTo", userTo, "register", true, "error", "User with this email already exists", "message", errorInfo));
         return addUserToAndStatus(mav, httpStatus);
     }
 

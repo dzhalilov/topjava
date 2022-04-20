@@ -7,6 +7,8 @@
 <jsp:include page="fragments/headTag.jsp"/>
 
 <body>
+<script src="resources/js/topjava.common.js" defer></script>
+<script src="resources/js/topjava.users.js" defer></script>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 
 <div class="jumbotron pt-4">
@@ -40,4 +42,7 @@
 </div>
 <jsp:include page="fragments/footer.jsp"/>
 </body>
+<jsp:include page="fragments/i18n.jsp">
+    <jsp:param name="page" value="user"/>
+</jsp:include>
 </html>

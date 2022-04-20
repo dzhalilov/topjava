@@ -57,15 +57,7 @@ public class ExceptionInfoHandler {
 //                }
 //            }
 //        }
-        String message = ValidationUtil.getRootCause(e).getMessage();
-        if (message != null) {
-            String lowerCaseMsg = message.toLowerCase();
-            if (lowerCaseMsg.contains("users_unique_email_idx")) {
-                return logAndGetErrorInfo(req, new Exception("User with this email already exists"),
-                        false, DATA_ERROR, "User with this email already exists");
-            }
-        }
-        return logAndGetErrorInfo(req, e, true, DATA_ERROR, "");
+        return handleUniqEmailError(req, e);
     }
 
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)  // 422
@@ -91,5 +83,17 @@ public class ExceptionInfoHandler {
             log.warn("{} at request  {}: {}", errorType, req.getRequestURL(), rootCause.toString());
         }
         return new ErrorInfo(req.getRequestURL(), errorType, errorString);
+    }
+
+    static ErrorInfo handleUniqEmailError(HttpServletRequest req, DataIntegrityViolationException e) {
+        String message = ValidationUtil.getRootCause(e).getMessage();
+        if (message != null) {
+            String lowerCaseMsg = message.toLowerCase();
+            if (lowerCaseMsg.contains("users_unique_email_idx")) {
+                return logAndGetErrorInfo(req, new Exception("User with this email already exists"),
+                        false, DATA_ERROR, "User with this email already exists");
+            }
+        }
+        return logAndGetErrorInfo(req, e, true, DATA_ERROR, "");
     }
 }

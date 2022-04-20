@@ -12,6 +12,7 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -87,6 +88,8 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(user))
                 .content(JsonUtil.writeValue(getUpdatedWithNotValidData())))
                 .andExpect(status().isUnprocessableEntity());
+//                .andExpect(result -> assertEquals(ERROR_INFO_UPDATE_WITH_WRONG_DATA, result.getResolvedException().getMessage()));
+//                .andExpect(ERROR_INFO_MATCHER.contentJson(ERROR_INFO_UPDATE_WITH_WRONG_DATA));
     }
 
     @Test
